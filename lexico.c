@@ -63,7 +63,7 @@ int main() {
     int finals[] = {0, 1, 1, 1, 1, 0, 0, 1};
     int i, j;
     int last_final, current_state;
-    char *start, *lower, *upper;
+    int start, lower, upper;
     char *str = empty_str();
     
     fill_array(8, LEN, 0, automata);
@@ -108,6 +108,22 @@ int main() {
         }
     }
 
+    start = 0;
+    while (1) {
+        if (!str[start]) {
+            break;
+        }
+
+        current_state = 1;
+        last_final = 0;
+        upper = start;
+        lower = start;
+
+        while (str[lower]) {
+            char c = str[lower++];
+        }
+
+    }
 
     
     puts(str);
