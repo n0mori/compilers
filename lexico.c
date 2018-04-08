@@ -58,55 +58,61 @@ int state(int s) {
     return s - 1;
 }
 
+char *le_linha() {
+    char *str = empty_str();
+    while (1) {
+        char c = getchar();
+        if (c == EOF) {
+            break;
+        } else {
+            str = concatena(str, c);
+        }
+    }
+    return str;
+}
+
 int main() {
     int automata[8][LEN];
     int finals[] = {0, 1, 1, 1, 1, 0, 0, 1};
     int i, j;
     int last_final, current_state;
     int start, lower, upper;
-    char *str = empty_str();
+    char *str;
     
-    fill_array(8, LEN, 0, automata);
+    fill_array(8, LEN, -1, automata);
 
     i = 0; // inicial = 1 - 1 (offset)
-    automata[i]['+'] = 3;
-    automata[i]['-'] = 4;
-    fill_alfabeto(2, automata[i]);
-    fill_number(5, automata[i]);
+    automata[i]['+'] = 2;
+    automata[i]['-'] = 3;
+    fill_alfabeto(1, automata[i]);
+    fill_number(4, automata[i]);
     
     i++; // 2 - 1 = 1
-    fill_alfabeto(2, automata[i]);
-    fill_number(2, automata[i]);
+    fill_alfabeto(1, automata[i]);
+    fill_number(1, automata[i]);
     
     i++; // 3 - 1 = 2
 
     i++; // 4 - 1 = 3
 
     i++; // 5 - 1 = 4
-    automata[i]['e'] = 6;
-    fill_number(5, automata[i]);
+    automata[i]['e'] = 5;
+    fill_number(4, automata[i]);
 
     i++; // 6 - 1 = 5
-    automata[i]['+'] = 7;
-    automata[i]['-'] = 7;
-    fill_number(8, automata[i]);
+    automata[i]['+'] = 6;
+    automata[i]['-'] = 6;
+    fill_number(7, automata[i]);
 
     i++; // 7 - 1 = 6
-    fill_number(8, automata[i]);
+    fill_number(7, automata[i]);
     
     i++; // 8 - 1 = 7
-    fill_number(8, automata[i]);
+    fill_number(7, automata[i]);
+    
+    //print_array(8, LEN, automata);
 
-    while (1) {
-        char c = getchar();
-        if (c == EOF) {
-            break;
-        } else if (c == '\n') {
-
-        } else {
-            str = concatena(str, c);
-        }
-    }
+    str = le_linha();
 
     start = 0;
     while (1) {
@@ -114,17 +120,46 @@ int main() {
             break;
         }
 
-        current_state = 1;
-        last_final = 0;
+        current_state = 0;
+        last_final = -1;
         upper = start;
         lower = start;
 
-        while (str[lower]) {
+        while (1) {
             char c = str[lower++];
-        }
 
+            if (c == '\n' || c == 0 || automata[current_state][c] == -1) {
+                if (!finals[current_state]) {
+                    if (last_final == -1) {
+                        if (c != '\n') {
+                            puts("ERRO");
+                        }
+                        upper = lower;
+                    } else {
+                        for (i = start; i < upper; i++) {
+                            putchar(str[i]);
+                        }
+                        puts("");
+                    }
+                } else {
+                    for (i = start; i < upper; i++) {
+                        putchar(str[i]);
+                    }
+                    puts("");
+                }
+                break;
+            }
+
+            current_state = automata[current_state][c];
+            if (finals[current_state]) {
+                last_final = current_state;
+                upper = lower;
+            }
+
+        }           
+
+        start = upper;
     }
 
     
-    puts(str);
 }
