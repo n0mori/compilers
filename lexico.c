@@ -61,7 +61,7 @@ int state(int s) {
 char *le_linha() {
     char *str = empty_str();
     while (1) {
-        char c = getchar();
+        char c = getc(stdin);
         if (c == EOF) {
             break;
         } else {
