@@ -46,7 +46,7 @@ char *empty_str() {
 }
 
 char *concatena(char *str, char c) {
-    char *aux = malloc((strlen(str) + 1) * sizeof(char));
+    char *aux = malloc((strlen(str) + 2) * sizeof(char));
     strcpy(aux, str);
     aux[strlen(str)] = c;
     aux[strlen(str) + 1] = 0;
@@ -161,5 +161,7 @@ int main() {
         start = upper;
     }
 
+    free(str);
+    return 0;
     
 }
