@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define LEN 128
+#define LEN 256
 
 void fill_array(int rows, int cols, int value, int arr[rows][cols]) {
     int i, j;
     for (i = 0; i < rows; i++) {
-        for (j = 0; j < rows; j++) {
+        for (j = 0; j < cols; j++) {
             arr[i][j] = value;
         }
     }
@@ -19,13 +19,14 @@ void fill_range(int length, int start, int end, int value, int arr[length]) {
     }
 }
 
-char *empty_str() {
-    char *str = malloc(sizeof(char));
+unsigned char *empty_str() {
+    unsigned char *str = malloc(sizeof(unsigned char));
+    *str = 0;
     return str;
 }
 
-char *concatena(char *str, char c) {
-    char *aux = malloc((strlen(str) + 2) * sizeof(char));
+unsigned char *concatena(char *str, char c) {
+    unsigned char *aux = malloc((strlen(str) + 2) * sizeof(unsigned char));
     strcpy(aux, str);
     aux[strlen(str)] = c;
     aux[strlen(str) + 1] = 0;
@@ -33,15 +34,10 @@ char *concatena(char *str, char c) {
     return aux;    
 }
 
-char* leitura() {
-    char c;
-    char *str = empty_str();
-    while (1) {
-        c = getc(stdin);
-        if (c == EOF) {
-            break;
-        }
-
+unsigned char* leitura() {
+    int c;
+    unsigned char *str = empty_str();
+    while ((c = getc(stdin)) != EOF) {
         str = concatena(str, c);
     }
     return str;
@@ -54,7 +50,7 @@ void fill_number(int value, int arr[LEN]) {
 int main() {
     int automata[22][LEN];
     int finals[] = {0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1};
-    char *final_names[] = {
+    unsigned char *final_names[] = {
         "",
         "",
         "ELE",
@@ -73,12 +69,13 @@ int main() {
         "CARROS",
         "MAIS",
         "MENOS",
+        "INTEIRO",
         "",
         "",
         "REAL"
     };
     int i = 0;
-    char *str = leitura();
+    unsigned char *str = leitura();
     int start, upper, lower, last_final, current_state;
 
     fill_array(22, LEN, -1, automata);
@@ -139,6 +136,7 @@ int main() {
 
     i++; //18
     fill_number(18, automata[i]);
+    automata[i]['e'] = 19;
 
     i++; //19
     automata[i]['+'] = 20;
@@ -164,33 +162,39 @@ int main() {
         lower = start;
 
         while(1) {
-            char c = str[lower++];
+            unsigned char c = str[lower++];
 
-            if (c == '\n' || !c || automata[current_state][c] == -1) {
+            if (c == '\n' || c == ' ' || !c || automata[current_state][c] == -1) {
                 if (last_final == -1) {
-                    if (start == upper) {
-                        fputs("ERRO", stdout);
+                    if (start == upper && c != '\n' && c != ' ' && c != 0) {
+                        fputs("ERRO\n", stdout);
                     } 
                     upper++;
-                    break;
                 } else {
-                    fprintf(stdout, "%s ", final_names[last_final]);
-                    for (i = start; i < upper; i++) {
-                        putc(str[i], stdout);
+                    fprintf(stdout, "%s", final_names[last_final]);
+                    if (last_final == 18 || last_final == 21) {
+                        putc(' ', stdout);
+                        for (i = start; i < upper; i++) {
+                            putc(str[i], stdout);
+                        }
                     }
-                    fputs("", stdout);
+                    fputs("\n", stdout);
                 }
+                break;
             }            
 
             current_state = automata[current_state][c];
             if (finals[current_state]) {
                 last_final = current_state;
-                upper++;
+                upper = lower;
             }
         }
 
+        start = upper;
+
     }
     
+    free(str);
 
     return 0;
 }
