@@ -15,7 +15,7 @@
         }
         printf(" comment\n", yytext);
     }
-[ \t] {puts("white space");}
+[ \t\r] {puts("white space");}
 \n
 . {printf("%s error\n", yytext);}
 
