@@ -167,7 +167,7 @@ int main() {
             if (c == '\n' || c == ' ' || !c || automata[current_state][c] == -1) {
                 if (last_final == -1) {
                     if (start == upper && c != '\n' && c != ' ' && c != 0) {
-                        fputs("ERRO\n", stdout);
+                        fputs("\nERRO", stdout);
                     } 
                     upper++;
                 } else {
@@ -178,7 +178,6 @@ int main() {
                             putc(str[i], stdout);
                         }
                     }
-                    fputs("\n", stdout);
                 }
                 break;
             }            
