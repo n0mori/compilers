@@ -90,7 +90,7 @@ exit    { column += yyleng; if (prt()) printf("EXIT");}
 [0-9]+                  { column += yyleng; if (prt()) printf("NUM_INTEGER(%s)", yytext);}
 \".*\"  { column += yyleng; yytext[yyleng-1] = 0; if (prt()) printf("STRING(%s)", yytext + 1);}
 \'.*\'  { column += yyleng; yytext[yyleng-1] = 0; if (prt()) printf("CHARACTER(%s\b)", yytext + 1);}
-.       { if (prt()) printf("error:lexical:%d:%d: %s", yylineno, column, yytext);}
+.       { column += yyleng; if (prt()) printf("error:lexical:%d:%d: %s", yylineno, column, yytext);}
 
 %%
 
