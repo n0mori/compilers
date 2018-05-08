@@ -1,4 +1,5 @@
 %option noyywrap
+%option yylineno
 
 %{
     int open_comment = 0;
@@ -24,8 +25,8 @@
 %%
 
 "//".*\n { column = 0; }
-\/\*    { open_comment = 1; line_open = yylineno;}
-\*\/    { open_comment = 0;}
+\/\*    { column += yyleng; open_comment = 1; line_open = yylineno;}
+\*\/    { column += yyleng; open_comment = 0;}
 [ \t]   { column += yyleng;}
 \n      { column = 0;}
 void    { column += yyleng; if (prt()) printf("VOID");}
