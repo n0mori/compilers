@@ -4,7 +4,7 @@
 #define LENGTH 256
 
 enum terminals {NOT, DOLLAR, LPAR, RPAR, PLUS, STAR, ID};
-char *names[] = {"", "$", "(", ")", "+", "*", "id"};
+char *names[] = {"", "$ ", "( ", ") ", "+ ", "* ", "id "};
 
 void fill_array(int rows, int cols, int value, int arr[rows][cols]) {
     int i, j;
@@ -69,13 +69,20 @@ void advance() {
     tokens++;
 }
 
+int err = 0;
+
+void error() {
+    err = 1;
+}
+
 void eat(int value) {
     if (*tokens == value) {
         advance();
     } else {
-
+        error();
     }
 }
+
 
 void S();
 void E();
@@ -105,12 +112,12 @@ int main() {
     fill_number(6, arr[i]);
 
     unsigned char *str = input();
-        puts(str);
 
     tokens = empty_str();
     start = 0;
-    while (str[start]) {
-        int parse = 0;
+    int parse = 0;
+    while (str[start] || str[start-1]) {
+        parse = 0;
 
         upper = start;
         lower = start;
@@ -126,13 +133,13 @@ int main() {
                 if (last_final == -1) {
                     if (start == upper && c && c != ' ' && c != '\n') {
                         prt();
-                        printf("ERRO LEXICO: %d", c);
+                        printf("ERRO LEXICO: %c", c);
                         while (c && c != '\n') {
                             c = str[lower++];
                             upper = lower - 1;
                         }
                     } else {
-                        if (c == '\n' || !c) {
+                        if (c == '\n' || c == 0) {
                             parse = 1;
                         }
                     }
@@ -151,9 +158,16 @@ int main() {
 
         }
 
-
         if (parse) {
             unsigned char* aux = tokens;
+            /*
+            int j;
+            for (j = 0; j < strlen(tokens); j++) {
+                printf("%d ", tokens[j]);
+            }
+            */
+
+            err = 0;
             S();
             free(aux);
             tokens = empty_str();
@@ -168,9 +182,12 @@ int main() {
 void S() {
     unsigned char tok = *tokens;
     switch (tok) {
-        case ID: E(); eat(DOLLAR); prt(); printf("CADEIA ACEITA"); break;
-        case LPAR: E(); eat(DOLLAR); prt(); printf("CADEIA ACEITA"); break;
-        default: prt(); printf("ERRO SINTATICO EM: %s ESPERADO: id, (", names[tok]);
+        case ID: 
+            E(); eat(DOLLAR); if (!err) { prt(); printf("CADEIA ACEITA"); } else { prt(); printf("ERRO SINTATICO EM: %sESPERADO: )", names[tok]); } break;
+        case LPAR: 
+            E(); eat(DOLLAR); if (!err) { prt(); printf("CADEIA ACEITA"); } else { prt(); printf("ERRO SINTATICO EM: %sESPERADO: $", names[tok]); } break;
+        default: 
+            prt(); printf("ERRO SINTATICO EM: %sESPERADO: id, (", names[tok]); error();
     }
 }
 
@@ -179,7 +196,7 @@ void E() {
     switch (tok) {
         case ID: T(); E_PRIME(); break;
         case LPAR: T(); E_PRIME(); break;
-        default: prt(); printf("ERRO SINTATICO EM: %s ESPERADO: id, (", names[tok]);
+        default: if (!err) { prt(); printf("ERRO SINTATICO EM: %sESPERADO: id, (", names[tok]); } error();
     }
 }
 
@@ -189,7 +206,7 @@ void E_PRIME() {
         case PLUS: eat(PLUS); T(); E_PRIME(); break;
         case RPAR: break;
         case DOLLAR: break;
-        default: prt(); printf("ERRO SINTATICO EM: %s ESPERADO: +, ), $", names[tok]);
+        default: if (!err) { prt(); printf("ERRO SINTATICO EM: %sESPERADO: +, ), $", names[tok]); } error();
     }
 }
 
@@ -198,7 +215,7 @@ void T() {
     switch (tok) {
         case ID: F(); T_PRIME(); break;
         case LPAR: F(); T_PRIME(); break;
-        default: prt(); printf("ERRO SINTATICO EM: %s ESPERADO: id, (", names[tok]);
+        default: if (!err) { prt(); printf("ERRO SINTATICO EM: %sESPERADO: id, (", names[tok]); } error();
     }
 }
 
@@ -209,7 +226,7 @@ void T_PRIME() {
         case STAR: eat(STAR); F(); T_PRIME(); break;
         case RPAR: break;
         case DOLLAR: break;
-        default: prt(); printf("ERRO SINTATICO EM: %s ESPERADO: +, *, ), $", names[tok]);
+        default: if (!err) { prt(); printf("ERRO SINTATICO EM: %sESPERADO: +, *, ), $", names[tok]); } error();
     }
 }
 
@@ -218,5 +235,6 @@ void F() {
     switch (tok) {
         case ID: eat(ID); break;
         case LPAR: eat(LPAR); E(); eat(RPAR); break;
+        default: if (!err) { prt(); printf("ERRO SINTATICO EM: %sESPERADO: id, (", names[tok]); } error();
     }
 }
