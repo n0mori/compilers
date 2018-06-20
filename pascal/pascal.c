@@ -177,14 +177,24 @@ void eat(int value) {
 
 int main() {
     int arr[85][LENGTH];
-    int finals[] = {0, 1, 1, 1, 1, 1, 1};
-    int final_map[] = {};
+    int finals[85];
+    int final_map[85];
     int i;
     int current_state, last_final, start, upper, lower;
 
     unsigned char *str = input();
 
-    fill_array(84, LENGTH, -1, arr);
+    fill_array(85, LENGTH, -1, arr);
+
+    final_map[0] = 0;
+    for (i = 1; i < 85; i++) {
+        final_map[i] = 2;
+    }
+
+    for (i = 0; i < 85; i++) {
+        finals[i] = 1;
+    }
+    finals[0] = 0;
 
     i = 0;
     fill_letter(84, arr[i]);
@@ -260,6 +270,7 @@ int main() {
     arr[i]['M'] = 7;
 
     i = 7;
+    final_map[i] = 1;
 
     i = 8;
     arr[i]['e'] = 9;
@@ -282,12 +293,14 @@ int main() {
     arr[i]['E'] = 13;
 
     i = 13;
+    final_map[i] = 4;
 
     i = 14;
     arr[i]['f'] = 15;
     arr[i]['F'] = 15;
 
     i = 15;
+    final_map[i] = 10;
 
     i = 16;
     arr[i]['a'] = 17;
@@ -298,6 +311,7 @@ int main() {
     arr[i]['R'] = 18;
 
     i = 18;
+    final_map[i] = 3;
 
     i = 19;
     arr[i]['u'] = 20;
@@ -328,6 +342,7 @@ int main() {
     arr[i]['N'] = 26;
 
     i = 26;
+    final_map[i] = 5;
 
     i = 27;
     arr[i]['e'] = 28;
@@ -346,6 +361,7 @@ int main() {
     arr[i]['N'] = 31;
 
     i = 31;
+    final_map[i] = 6;
 
     i = 32;
     arr[i]['n'] = 33;
@@ -358,6 +374,7 @@ int main() {
     arr[i]['D'] = 34;
 
     i = 34;
+    final_map[i] = 7;
 
     i = 35;
     arr[i]['n'] = 36;
@@ -370,6 +387,7 @@ int main() {
     arr[i]['D'] = 37;
 
     i = 37;
+    final_map[i] = 17;
     
     i = 38;
     arr[i]['r'] = 39;
@@ -384,6 +402,7 @@ int main() {
     arr[i]['Y'] = 41;
 
     i = 41;
+    final_map[i] = 8;
 
     i = 42;
     arr[i]['f'] = 43;
@@ -392,8 +411,10 @@ int main() {
     arr[i]['O'] = 44;
 
     i = 43;
+    final_map[i] = 9;
 
     i = 44;
+    final_map[i] = 15;
 
     i = 45;
     arr[i]['h'] = 46;
@@ -408,6 +429,7 @@ int main() {
     arr[i]['N'] = 48;
 
     i = 48;
+    final_map[i] = 11;
 
     i = 49;
     arr[i]['s'] = 50;
@@ -418,6 +440,7 @@ int main() {
     arr[i]['E'] = 51;
     
     i = 51;
+    final_map[i] = 12;
 
     i = 52;
     arr[i]['h'] = 52;
@@ -436,6 +459,7 @@ int main() {
     arr[i]['E'] = 56;
 
     i = 56;
+    final_map[i] = 13;
 
     i = 57;
     arr[i]['o'] = 58;
@@ -444,12 +468,14 @@ int main() {
     arr[i]['I'] = 59;
 
     i = 58;
+    final_map[i] = 14;
 
     i = 59;
     arr[i]['v'] = 60;
     arr[i]['V'] = 60;
 
     i = 60;
+    final_map[i] = 16;
 
     i = 61;
     arr[i]['o'] = 62;
@@ -459,51 +485,74 @@ int main() {
     arr[i]['t'] = 63;
     arr[i]['T'] = 63;
 
+    i = 63;
+    final_map[i] = 19;
+
     i = 64;
+    final_map[i] = 20;
 
     i = 65;
     arr[i]['.'] = 66;
+    final_map[i] = 21;
 
     i = 66;
+    final_map[i] = 24;
     
     i = 67;
     arr[i]['='] = 73;
+    final_map[i] = 22;
 
     i = 68;
+    final_map[i] = 23;
 
     i = 69;
+    final_map[i] = 25;
 
     i = 70;
+    final_map[i] = 26;
 
     i = 71;
+    final_map[i] = 27;
 
     i = 72;
+    final_map[i] = 28;
 
     i = 73;
+    final_map[i] = 29;
 
     i = 74;
+    final_map[i] = 30;
 
     i = 75;
     arr[i]['>'] = 76;
     arr[i]['='] = 77;
+    final_map[i] = 32;
 
     i = 76;
+    final_map[i] = 31;
 
     i = 77;
+    final_map[i] = 33;
 
     i = 78;
     arr[i]['='] = 79;
+    final_map[i] = 35;
 
     i = 79;
+    final_map[i] = 34;
 
     i = 80;
+    final_map[i] = 36;
 
     i = 81;
+    final_map[i] = 37;
 
     i = 82;
+    final_map[i] = 38;
 
     i = 83;
     fill_number(83, arr[i]);
+    final_map[i] = 18;
 
     i = 84;
     fill_number(84, arr[i]);
@@ -512,7 +561,7 @@ int main() {
     tokens = empty_str();
     start = 0;
     int parse = 0;
-    while (str[start] || str[start-1]) {
+    while (str[start]) {
         parse = 0;
 
         upper = start;
@@ -530,18 +579,25 @@ int main() {
                     if (start == upper && c && c != ' ' && c != '\n') {
                         prt();
                         printf("ERRO LEXICO: %c", c);
+                        /*
                         while (c && c != '\n') {
                             c = str[lower++];
                             upper = lower - 1;
                         }
+                        */
                     } else {
+                        /*
                         if (c == '\n' || c == 0) {
                             parse = 1;
                         }
+                        */
                     }
                     upper++;
                 } else {
-                    tokens = concatena(tokens, last_final);
+                    //tokens = concatena(tokens, last_final);
+                    prt();
+                    int pos = final_map[last_final];
+                    printf("%s", names[pos]);
                 }
                 break;
             }
@@ -564,7 +620,7 @@ int main() {
             */
 
             err = 0;
-            S();
+            //S();
             free(aux);
             tokens = empty_str();
         }
