@@ -85,7 +85,7 @@ char *names[] = {
     "+",
     "-",
     "*",
-    "$",
+    "$"
 };
 
 void fill_array(int rows, int cols, int value, int arr[rows][cols]) {
@@ -176,22 +176,22 @@ void eat(int value) {
 }
 
 int main() {
-    int arr[85][LENGTH];
-    int finals[85];
-    int final_map[85];
+    int arr[86][LENGTH];
+    int finals[86];
+    int final_map[86];
     int i;
     int current_state, last_final, start, upper, lower;
 
     unsigned char *str = input();
 
-    fill_array(85, LENGTH, -1, arr);
+    fill_array(86, LENGTH, -1, arr);
 
     final_map[0] = 0;
-    for (i = 1; i < 85; i++) {
+    for (i = 1; i < 86; i++) {
         final_map[i] = 2;
     }
 
-    for (i = 0; i < 85; i++) {
+    for (i = 0; i < 86; i++) {
         finals[i] = 1;
     }
     finals[0] = 0;
@@ -240,6 +240,7 @@ int main() {
     arr[i]['+'] = 80;
     arr[i]['-'] = 81;
     arr[i]['*'] = 82;
+    arr[i]['$'] = 85;
 
     fill_id(1, 63, arr);
 
@@ -557,6 +558,9 @@ int main() {
     i = 84;
     fill_number(84, arr[i]);
     fill_letter(84, arr[i]);
+
+    i = 85;
+    final_map[i] = 39;
 
     tokens = empty_str();
     start = 0;
