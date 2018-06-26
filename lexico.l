@@ -25,10 +25,10 @@
 %%
 
 "//".*\n { column = 0; }
-\/\*    { column += yyleng; open_comment = 1; line_open = yylineno;}
+\/\*    { column_open = column + 1; column += yyleng; open_comment = 1; line_open = yylineno;}
 \*\/    { column += yyleng; open_comment = 0;}
 [ \t]   { column += yyleng;}
-\n      { column = 0;}
+[\n\r]  { column = 0;}
 void    { column += yyleng; if (prt()) printf("VOID");}
 int     { column += yyleng; if (prt()) printf("INT");}
 char    { column += yyleng; if (prt()) printf("CHAR");}
