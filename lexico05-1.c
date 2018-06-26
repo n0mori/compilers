@@ -71,6 +71,15 @@ char *le_linha() {
     return str;
 }
 
+int barran = 0;
+void prt() {
+    if (barran) {
+        puts("");
+    } else {
+        barran = 1;
+    }
+}
+
 int main() {
     int automata[8][LEN];
     int finals[] = {0, 1, 1, 1, 1, 0, 0, 1};
@@ -132,20 +141,21 @@ int main() {
                 if (!finals[current_state]) {
                     if (last_final == -1) {
                         if (c != '\n') {
-                            puts("ERRO");
+                            prt();
+                            printf("ERRO");
                         }
                         upper = lower;
                     } else {
+                        prt();
                         for (i = start; i < upper; i++) {
                             putchar(str[i]);
                         }
-                        puts("");
                     }
                 } else {
+                    prt();
                     for (i = start; i < upper; i++) {
                         putchar(str[i]);
                     }
-                    puts("");
                 }
                 break;
             }

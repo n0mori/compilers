@@ -47,6 +47,15 @@ void fill_number(int value, int arr[LEN]) {
     fill_range(LEN, '0', '9', value, arr);
 }
 
+int barran = 0;
+void prt() {
+    if (barran) {
+        puts("");
+    } else {
+        barran = 1;
+    }
+}
+
 int main() {
     int automata[22][LEN];
     int finals[] = {0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1};
@@ -167,10 +176,12 @@ int main() {
             if (c == '\n' || c == ' ' || !c || automata[current_state][c] == -1) {
                 if (last_final == -1) {
                     if (start == upper && c != '\n' && c != ' ' && c != 0) {
-                        fputs("\nERRO", stdout);
+                        prt();
+                        fputs("ERRO", stdout);
                     } 
                     upper++;
                 } else {
+                    prt();
                     fprintf(stdout, "%s", final_names[last_final]);
                     if (last_final == 18 || last_final == 21) {
                         putc(' ', stdout);

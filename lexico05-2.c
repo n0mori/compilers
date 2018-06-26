@@ -55,6 +55,15 @@ unsigned char *reader() {
     return str;
 }
 
+int barran = 0;
+void prt() {
+    if (barran) {
+        puts("");
+    } else {
+        barran = 1;
+    }
+}
+
 int main() {
     unsigned char *str = reader();
     int automata[13][LENGTH];
@@ -148,6 +157,7 @@ int main() {
                     upper++;
                     break;
                 } else if (automata[current_state][c] == -1) {
+                    prt();
                     if (last_final != 11) {
                         for (i = start; i < upper; i++) {
                             if (str[i] != '\n') {
@@ -156,7 +166,7 @@ int main() {
                         }
                         fputc(' ', stdout);
                     }
-                    fprintf(stdout, "%s\n", final_names[last_final]);
+                    fprintf(stdout, "%s", final_names[last_final]);
                     break;
                 }
             }
