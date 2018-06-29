@@ -43,7 +43,8 @@ enum terminals {
     PLUS,
     MINUS,
     STAR,
-    DOLLAR
+    DOLLAR,
+    COMM
 };
 char *names[] = {
     "",
@@ -85,7 +86,8 @@ char *names[] = {
     "+",
     "-",
     "*",
-    "$"
+    "$",
+    "comm"
 };
 
 void fill_array(int rows, int cols, int value, int arr[rows][cols]) {
@@ -176,15 +178,15 @@ void eat(int value) {
 }
 
 int main() {
-    int arr[86][LENGTH];
-    int finals[86];
-    int final_map[86];
+    int arr[91][LENGTH];
+    int finals[91];
+    int final_map[91];
     int i;
     int current_state, last_final, start, upper, lower;
 
     unsigned char *str = input();
 
-    fill_array(86, LENGTH, -1, arr);
+    fill_array(91, LENGTH, -1, arr);
 
     final_map[0] = 0;
     for (i = 1; i < 86; i++) {
@@ -195,6 +197,11 @@ int main() {
         finals[i] = 1;
     }
     finals[0] = 0;
+    finals[86] = 0;
+    finals[87] = 0;
+    finals[88] = 1;
+    finals[89] = 0;
+    finals[90] = 1;
 
     i = 0;
     fill_letter(84, arr[i]);
@@ -241,6 +248,7 @@ int main() {
     arr[i]['-'] = 81;
     arr[i]['*'] = 82;
     arr[i]['$'] = 85;
+    arr[i]['{'] = 89;
 
     fill_id(1, 63, arr);
 
@@ -513,6 +521,7 @@ int main() {
     final_map[i] = 26;
 
     i = 71;
+    arr[i]['*'] = 86;
     final_map[i] = 27;
 
     i = 72;
@@ -562,6 +571,24 @@ int main() {
     i = 85;
     final_map[i] = 39;
 
+    i = 86;
+    fill_range(0, LENGTH - 1, 86, arr[i]);
+    arr[i]['*'] = 87;
+
+    i = 87;
+    fill_range(0, LENGTH - 1, 86, arr[i]);
+    arr[i][')'] = 88;
+
+    i = 88;
+    final_map[i] = 40;
+
+    i = 89;
+    fill_range(0, LENGTH - 1, 89, arr[i]);
+    arr[i]['}'] = 90;
+
+    i = 90;
+    final_map[i] = 40;
+
     tokens = empty_str();
     start = 0;
     int parse = 0;
@@ -582,7 +609,7 @@ int main() {
                 if (last_final == -1) {
                     if (start == upper && c && c != ' ' && c != '\n') {
                         prt();
-                        printf("ERRO LEXICO: %c", c);
+                        printf("ERRO LEXICO. Linha: %d Coluna: %d -> %c", 0, 0, c);
                         /*
                         while (c && c != '\n') {
                             c = str[lower++];
