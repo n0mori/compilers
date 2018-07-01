@@ -592,6 +592,8 @@ int main() {
     tokens = empty_str();
     start = 0;
     int parse = 0;
+    int lineno = 1;
+    int column = 0;
     while (str[start]) {
         parse = 0;
 
@@ -601,15 +603,24 @@ int main() {
         last_final = -1;
         current_state = 0;
 
+        int cp = start;
+
 
         while (1) {
             unsigned char c = str[lower++];
+
+            if (c == '\n' && (current_state == 86 || current_state == 87 || current_state == 89)) {
+                cp = lower;
+                column = 0;
+                lineno++;
+            }
 
             if (arr[current_state][c] == -1) {
                 if (last_final == -1) {
                     if (start == upper && c && c != ' ' && c != '\n') {
                         prt();
-                        printf("ERRO LEXICO. Linha: %d Coluna: %d -> %c", 0, 0, c);
+                        column++;
+                        printf("ERRO LEXICO. Linha: %d Coluna: %d -> %c", lineno, column, c);
                         /*
                         while (c && c != '\n') {
                             c = str[lower++];
@@ -617,6 +628,12 @@ int main() {
                         }
                         */
                     } else {
+                        if (c == '\n') {
+                            lineno++;
+                            column = 0;
+                        } else {
+                            column++;
+                        }
                         /*
                         if (c == '\n' || c == 0) {
                             parse = 1;
@@ -626,6 +643,7 @@ int main() {
                     upper++;
                 } else {
                     //tokens = concatena(tokens, last_final);
+                    column += (upper - cp);
                     prt();
                     int pos = final_map[last_final];
                     printf("%s", names[pos]);
