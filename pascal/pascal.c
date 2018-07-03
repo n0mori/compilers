@@ -768,7 +768,7 @@ int main() {
 void PROGRAMA() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -783,7 +783,7 @@ void PROGRAMA() {
 void BLOCO() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -798,7 +798,7 @@ void BLOCO() {
 void BLOCOVAR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -814,7 +814,7 @@ void BLOCOVAR() {
 void BLOCOID() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -830,7 +830,7 @@ void BLOCOID() {
 void BLOCOM() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -846,7 +846,7 @@ void BLOCOM() {
 void BLOCOMANDO() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -862,7 +862,7 @@ void BLOCOMANDO() {
 void BLOCOMANDOCOM() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -878,7 +878,7 @@ void BLOCOMANDOCOM() {
 void COMANDO() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -893,7 +893,7 @@ void COMANDO() {
 void COMID() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -909,7 +909,7 @@ void COMID() {
 void COMPAR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -925,7 +925,7 @@ void COMPAR() {
 void COMPAREXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -941,7 +941,7 @@ void COMPAREXPR() {
 void COMLOOP() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -956,7 +956,7 @@ void COMLOOP() {
 void COMELSE() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -972,7 +972,7 @@ void COMELSE() {
 void VARIAVEL() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -988,7 +988,7 @@ void VARIAVEL() {
 void VARSQUARE() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1004,7 +1004,7 @@ void VARSQUARE() {
 void VAREXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1020,7 +1020,7 @@ void VAREXPR() {
 void TIPO() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1036,7 +1036,7 @@ void TIPO() {
 void TIPOCONST() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1052,7 +1052,7 @@ void TIPOCONST() {
 void TIPOARRAY() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1068,7 +1068,7 @@ void TIPOARRAY() {
 void PARAMETROS() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1084,7 +1084,7 @@ void PARAMETROS() {
 void PARAMSCOLON() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1100,7 +1100,7 @@ void PARAMSCOLON() {
 void PARAMVAR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1116,7 +1116,7 @@ void PARAMVAR() {
 void EXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1132,7 +1132,7 @@ void EXPR() {
 void CMPEXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1148,7 +1148,7 @@ void CMPEXPR() {
 void CMP() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1164,7 +1164,7 @@ void CMP() {
 void SIMPLEXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1180,7 +1180,7 @@ void SIMPLEXPR() {
 void SIGN() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1196,7 +1196,7 @@ void SIGN() {
 void OPSIMP() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1212,7 +1212,7 @@ void OPSIMP() {
 void SIMPSIGN() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1228,7 +1228,7 @@ void SIMPSIGN() {
 void TERMO() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1244,7 +1244,7 @@ void TERMO() {
 void OPFATOR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1260,7 +1260,7 @@ void OPFATOR() {
 void OPSIGN() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1276,7 +1276,7 @@ void OPSIGN() {
 void FATOR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1292,7 +1292,7 @@ void FATOR() {
 void FATORID() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1308,7 +1308,7 @@ void FATORID() {
 void FATOREXPR() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1324,7 +1324,7 @@ void FATOREXPR() {
 void CONSTANTE() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
@@ -1340,15 +1340,13 @@ void CONSTANTE() {
 void CONSTSIGN() {
     int tok = *tokens;
     unsigned char *str = *strs;
-    while (tok == '\n') {
+    while (tok == EOL) {
         advance();
         lineno++;
         tok = *tokens;
         str = *strs;
     }
-    switch (tok) {
-
-        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    switch (tok) { default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
 }
