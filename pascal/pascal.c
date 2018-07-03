@@ -44,7 +44,8 @@ enum terminals {
     MINUS,
     STAR,
     DOLLAR,
-    COMM
+    COMM,
+    EOL
 };
 char *names[] = {
     "",
@@ -87,7 +88,8 @@ char *names[] = {
     "-",
     "*",
     "$",
-    "comm"
+    "comm",
+    "\n"
 };
 
 void fill_array(int rows, int cols, int value, int arr[rows][cols]) {
@@ -139,6 +141,24 @@ unsigned char *concatena(unsigned char *str, unsigned char c) {
     return aux;
 }
 
+unsigned char **empty_arr() {
+    unsigned char **arr = malloc(sizeof(unsigned char *));
+    *arr = NULL;
+}
+
+unsigned char **cat(unsigned char **str, unsigned char *c) {
+
+    int len;
+    for (len = 0; str[len] != NULL; len++);
+
+    unsigned char **aux = malloc(sizeof(unsigned char *) * (len + 2));
+    memcpy(aux, str, sizeof(unsigned char *) * (len));
+    aux[len] = c;
+    aux[len + 1] = NULL;
+    free(str);
+    return aux;
+}
+
 unsigned char *input() {
     int c;
     unsigned char *str = empty_str();
@@ -158,9 +178,11 @@ void prt() {
 }
 
 unsigned char *tokens;
+unsigned char **strs;
 
 void advance() {
     tokens++;
+    strs++;
 }
 
 int err = 0;
@@ -176,6 +198,48 @@ void eat(int value) {
         error();
     }
 }
+
+//PRODUÇÕES
+
+void PROGRAMA();
+void BLOCO();
+void BLOCOVAR();
+void BLOCOID();
+void BLOCOM();
+void BLOCOMANDO();
+void BLOCOMANDOCOM();
+void COMANDO();
+void COMID();
+void COMPAR();
+void COMPAREXPR();
+void COMLOOP();
+void COMELSE();
+void VARIAVEL();
+void VARSQUARE();
+void VAREXPR();
+void TIPO();
+void TIPOCONST();
+void TIPOARRAY();
+void PARAMETROS();
+void PARAMSCOLON();
+void PARAMVAR();
+void EXPR();
+void CMPEXPR();
+void CMP();
+void SIMPLEXPR();
+void SIGN();
+void OPSIMP();
+void SIMPSIGN();
+void TERMO();
+void OPFATOR();
+void OPSIGN();
+void FATOR();
+void FATORID();
+void FATOREXPR();
+void CONSTANTE();
+void CONSTSIGN();
+
+int lineno;
 
 int main() {
     int arr[91][LENGTH];
@@ -569,7 +633,7 @@ int main() {
     fill_letter(84, arr[i]);
 
     i = 85;
-    final_map[i] = 39;
+    finals[i] = 0;
 
     i = 86;
     fill_range(0, LENGTH - 1, 86, arr[i]);
@@ -590,9 +654,10 @@ int main() {
     final_map[i] = 40;
 
     tokens = empty_str();
+    strs = empty_arr();
     start = 0;
     int parse = 0;
-    int lineno = 1;
+    lineno = 1;
     int column = 0;
     while (str[start]) {
         parse = 0;
@@ -612,6 +677,13 @@ int main() {
             if (c == '\n' && (current_state == 86 || current_state == 87 || current_state == 89)) {
                 cp = lower;
                 column = 0;
+                tokens = concatena(tokens, EOL);
+
+                unsigned char *strt = empty_str();
+                strt = concatena(strt, '\n');
+
+                strs = cat(strs, strt);
+
                 lineno++;
             }
 
@@ -630,7 +702,12 @@ int main() {
                     } else {
                         if (c == '\n') {
                             lineno++;
+                            tokens = concatena(tokens, EOL);
                             column = 0;
+                            unsigned char *strt = empty_str();
+                            strt = concatena(strt, '\n');
+
+                            strs = cat(strs, strt);
                         } else {
                             column++;
                         }
@@ -644,9 +721,18 @@ int main() {
                 } else {
                     //tokens = concatena(tokens, last_final);
                     column += (upper - cp);
-                    prt();
+                    //prt();
                     int pos = final_map[last_final];
-                    printf("%s", names[pos]);
+                    //printf("%s", names[pos]);
+                    tokens = concatena(tokens, pos);
+
+                    unsigned char *strt = empty_str();
+
+                    for (int j = start; j < upper; j++) {
+                        strt = concatena(strt, str[j]);
+                    }
+
+                    strs = cat(strs, strt);
                 }
                 break;
             }
@@ -659,23 +745,610 @@ int main() {
 
         }
 
-        if (parse) {
-            unsigned char* aux = tokens;
-            /*
-            int j;
-            for (j = 0; j < strlen(tokens); j++) {
-                printf("%d ", tokens[j]);
-            }
-            */
-
-            err = 0;
-            //S();
-            free(aux);
-            tokens = empty_str();
-        }
 
         start = upper;
 
     }
 
+    unsigned char* aux = tokens;
+    /*
+    int j;
+    for (j = 0; j < strlen(tokens); j++) {
+        printf("%d %s ", tokens[j], strs[j]);
+    }
+    */
+
+    lineno = 1;
+    err = 0;
+    PROGRAMA();
+    free(aux);
+
+}
+
+void PROGRAMA() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+}
+
+void BLOCO() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+}
+
+void BLOCOVAR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void BLOCOID() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void BLOCOM() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void BLOCOMANDO() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void BLOCOMANDOCOM() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void COMANDO() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+}
+
+void COMID() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void COMPAR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void COMPAREXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void COMLOOP() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+}
+
+void COMELSE() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void VARIAVEL() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void VARSQUARE() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void VAREXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void TIPO() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void TIPOCONST() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void TIPOARRAY() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void PARAMETROS() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void PARAMSCOLON() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void PARAMVAR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+
+}
+
+void EXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void CMPEXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void CMP() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void SIMPLEXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void SIGN() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void OPSIMP() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void SIMPSIGN() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void TERMO() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void OPFATOR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void OPSIGN() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void FATOR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void FATORID() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void FATOREXPR() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void CONSTANTE() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
+}
+
+void CONSTSIGN() {
+    int tok = *tokens;
+    unsigned char *str = *strs;
+    while (tok == '\n') {
+        advance();
+        lineno++;
+        tok = *tokens;
+        str = *strs;
+    }
+    switch (tok) {
+
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    }
+    
 }
