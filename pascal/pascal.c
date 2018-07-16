@@ -192,6 +192,9 @@ void error() {
 }
 
 void eat(int value) {
+    while (*tokens == EOL) {
+        advance();
+    }
     if (*tokens == value) {
         advance();
     } else {
@@ -723,16 +726,18 @@ int main() {
                     column += (upper - cp);
                     //prt();
                     int pos = final_map[last_final];
-                    //printf("%s", names[pos]);
-                    tokens = concatena(tokens, pos);
+                    if (pos != COMM) {
+                        //printf("%s", names[pos]);
+                        tokens = concatena(tokens, pos);
 
-                    unsigned char *strt = empty_str();
+                        unsigned char *strt = empty_str();
 
-                    for (int j = start; j < upper; j++) {
-                        strt = concatena(strt, str[j]);
+                        for (int j = start; j < upper; j++) {
+                            strt = concatena(strt, str[j]);
+                        }
+
+                        strs = cat(strs, strt);
                     }
-
-                    strs = cat(strs, strt);
                 }
                 break;
             }
@@ -775,7 +780,7 @@ void PROGRAMA() {
         str = *strs;
     }
     switch (tok) {
-
+        case PROGRAM: eat(PROGRAM); eat(ID); eat(SEMICOLON); BLOCO(); eat(PERIOD); if (!err) { printf("CADEIA ACEITA.");} break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 }
@@ -790,7 +795,10 @@ void BLOCO() {
         str = *strs;
     }
     switch (tok) {
-
+        case VAR: eat(VAR); eat(ID); BLOCOID(); eat(COLON); TIPO(); eat(SEMICOLON); BLOCOVAR(); BLOCO(); break;
+        case PROC: eat(PROC); eat(ID); PARAMETROS(); eat(SEMICOLON); BLOCO(); eat(SEMICOLON); BLOCO(); break;
+        case FUNC: eat(FUNC); eat(ID); PARAMETROS(); eat(COLON); eat(ID); eat(SEMICOLON); BLOCO(); eat(SEMICOLON); BLOCO(); break;
+        case BEGIN: eat(BEGIN); BLOCOM(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 }
@@ -805,7 +813,11 @@ void BLOCOVAR() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID: eat(ID); BLOCOID(); eat(COLON); TIPO(); eat(SEMICOLON); BLOCOVAR(); break;
+        case VAR: break;
+        case PROC: break;
+        case FUNC: break;
+        case BEGIN: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -821,7 +833,8 @@ void BLOCOID() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); eat(ID); BLOCOID(); break;
+        case COLON: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -837,7 +850,12 @@ void BLOCOM() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE: COMANDO(); BLOCOMANDO(); eat(END); break;
+        case SEMICOLON:
+        case END: BLOCOMANDO(); eat(END); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -853,7 +871,8 @@ void BLOCOMANDO() {
         str = *strs;
     }
     switch (tok) {
-
+        case SEMICOLON: eat(SEMICOLON); BLOCOMANDOCOM(); BLOCOMANDO(); break;
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -869,7 +888,12 @@ void BLOCOMANDOCOM() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE: COMANDO(); break;
+        case SEMICOLON:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -885,7 +909,10 @@ void COMANDO() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID: eat(ID); COMID(); break;
+        case BEGIN: eat(BEGIN); COMANDO(); COMLOOP(); eat(END); break;
+        case IF: eat(IF); EXPR(); eat(THEN); eat (BEGIN); COMANDO(); COMLOOP(); eat(END); COMELSE(); break;
+        case WHILE: eat(WHILE); EXPR(); eat(DO); COMANDO(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 }
@@ -900,7 +927,9 @@ void COMID() {
         str = *strs;
     }
     switch (tok) {
-
+        case LSQUARE:
+        case ASSIGN: VARSQUARE(); eat(ASSIGN); EXPR(); break;
+        case LPAR: COMPAR(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -916,7 +945,14 @@ void COMPAR() {
         str = *strs;
     }
     switch (tok) {
-
+        case LPAR: eat(LPAR); EXPR(); COMPAREXPR(); eat(RPAR); break;
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case THEN:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -932,7 +968,8 @@ void COMPAREXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); EXPR(); COMPAREXPR(); break;
+        case RPAR: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -948,7 +985,8 @@ void COMLOOP() {
         str = *strs;
     }
     switch (tok) {
-
+        case SEMICOLON: eat(SEMICOLON); COMANDO(); COMLOOP(); break;
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 }
@@ -963,7 +1001,14 @@ void COMELSE() {
         str = *strs;
     }
     switch (tok) {
-
+        case ELSE: eat(ELSE); eat(BEGIN); COMANDO(); COMLOOP(); eat(END); break;
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case THEN:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -979,7 +1024,7 @@ void VARIAVEL() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID: eat(ID); VARSQUARE(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -995,7 +1040,31 @@ void VARSQUARE() {
         str = *strs;
     }
     switch (tok) {
-
+        case LSQUARE: eat(LSQUARE); EXPR(); VAREXPR(); eat(RSQUARE); break;
+        case ASSIGN:
+        case STAR:
+        case DIV:
+        case AND:
+        case PLUS:
+        case MINUS:
+        case OR:
+        case EQUAL:
+        case NOTEQUAL:
+        case LESS:
+        case LESSEQUAL:
+        case MOREEQUAL:
+        case MORE:
+        case COMMA:
+        case RPAR:
+        case THEN:
+        case DO:
+        case RSQUARE:
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1011,7 +1080,8 @@ void VAREXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); EXPR(); VAREXPR(); break;
+        case RSQUARE: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1027,7 +1097,11 @@ void TIPO() {
         str = *strs;
     }
     switch (tok) {
-
+        case ID: eat(ID); TIPOCONST();
+        case PLUS:
+        case MINUS:
+        case NUM: CONSTSIGN(); eat(NUM); eat(DOTDOT); CONSTANTE(); break;
+        case ARRAY: eat(ARRAY); eat(LSQUARE); TIPO(); TIPOARRAY(); eat(RSQUARE); eat(OF); TIPO(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1043,7 +1117,15 @@ void TIPOCONST() {
         str = *strs;
     }
     switch (tok) {
-
+        case DOTDOT: eat(DOTDOT); CONSTANTE(); break;
+        case COMMA:
+        case ID:
+        case NUM:
+        case ARRAY:
+        case PLUS:
+        case MINUS:
+        case SEMICOLON:
+        case RSQUARE: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1059,7 +1141,8 @@ void TIPOARRAY() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); TIPO(); TIPOARRAY(); break;
+        case RSQUARE: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1075,7 +1158,9 @@ void PARAMETROS() {
         str = *strs;
     }
     switch (tok) {
-
+        case LPAR: eat(LPAR); PARAMVAR(); eat(ID);/* PARAMID(); */eat(COLON); eat(ID); PARAMSCOLON(); break;
+        case SEMICOLON:
+        case COLON: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1091,7 +1176,8 @@ void PARAMSCOLON() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); PARAMVAR(); eat(ID); eat(COLON); eat(ID); PARAMSCOLON(); break;
+        case RPAR: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1107,7 +1193,8 @@ void PARAMVAR() {
         str = *strs;
     }
     switch (tok) {
-
+        case VAR: eat(VAR); break;
+        case ID: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
 
@@ -1123,7 +1210,12 @@ void EXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS:
+        case MINUS:
+        case NUM:
+        case ID:
+        case LPAR:
+        case NOT: SIMPLEXPR(); CMPEXPR(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1139,7 +1231,23 @@ void CMPEXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case EQUAL:
+        case NOTEQUAL:
+        case LESS:
+        case LESSEQUAL:
+        case MOREEQUAL:
+        case MORE: CMP(); SIMPLEXPR(); break;
+        case COMMA:
+        case RPAR:
+        case THEN:
+        case DO:
+        case RSQUARE:
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1155,7 +1263,12 @@ void CMP() {
         str = *strs;
     }
     switch (tok) {
-
+        case EQUAL: eat(EQUAL); break;
+        case NOTEQUAL: eat(NOTEQUAL); break;
+        case LESS: eat(LESS); break;
+        case LESSEQUAL: eat(LESSEQUAL); break;
+        case MOREEQUAL: eat(MOREEQUAL); break;
+        case MORE: eat(MORE); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1171,7 +1284,12 @@ void SIMPLEXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS:
+        case MINUS:
+        case NUM:
+        case ID:
+        case LPAR:
+        case NOT: SIGN(); TERMO(); OPSIMP(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1187,7 +1305,12 @@ void SIGN() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS: eat(PLUS); break;
+        case MINUS: eat(MINUS); break;
+        case NUM:
+        case ID:
+        case LPAR:
+        case NOT: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1203,7 +1326,26 @@ void OPSIMP() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS:
+        case MINUS:
+        case OR: SIMPSIGN(); TERMO(); OPSIMP(); break;
+        case EQUAL:
+        case NOTEQUAL:
+        case LESS:
+        case LESSEQUAL:
+        case MOREEQUAL:
+        case MORE:
+        case COMMA:
+        case RPAR:
+        case THEN:
+        case DO:
+        case RSQUARE:
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1219,7 +1361,9 @@ void SIMPSIGN() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS: eat(PLUS); break;
+        case MINUS: eat(MINUS); break;
+        case OR: eat(OR); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1235,7 +1379,10 @@ void TERMO() {
         str = *strs;
     }
     switch (tok) {
-
+        case NUM:
+        case ID:
+        case LPAR:
+        case NOT: FATOR(); OPFATOR(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1251,7 +1398,29 @@ void OPFATOR() {
         str = *strs;
     }
     switch (tok) {
-
+        case STAR:
+        case DIV:
+        case AND: OPSIGN(); FATOR(); OPFATOR(); break;
+        case PLUS:
+        case MINUS:
+        case OR:
+        case EQUAL:
+        case NOTEQUAL:
+        case LESS:
+        case LESSEQUAL:
+        case MOREEQUAL:
+        case MORE:
+        case COMMA:
+        case RPAR:
+        case THEN:
+        case DO:
+        case RSQUARE:
+        case ID:
+        case BEGIN:
+        case IF:
+        case WHILE:
+        case SEMICOLON:
+        case END: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1267,7 +1436,9 @@ void OPSIGN() {
         str = *strs;
     }
     switch (tok) {
-
+        case STAR: eat(STAR); break;
+        case DIV: eat(DIV); break;
+        case AND: eat(AND); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1283,7 +1454,10 @@ void FATOR() {
         str = *strs;
     }
     switch (tok) {
-
+        case NUM: eat(NUM); break;
+        case ID: eat(ID); FATORID(); break;
+        case LPAR: eat(LPAR); EXPR(); eat(RPAR); break;
+        case NOT: eat(NOT); FATOR(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1299,7 +1473,8 @@ void FATORID() {
         str = *strs;
     }
     switch (tok) {
-
+        case LPAR: eat(LPAR); EXPR(); FATOREXPR(); eat(RPAR); break;
+        case LSQUARE: VARSQUARE(); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1315,7 +1490,8 @@ void FATOREXPR() {
         str = *strs;
     }
     switch (tok) {
-
+        case COMMA: eat(COMMA); EXPR(); FATOREXPR(); break;
+        case RPAR: break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1331,7 +1507,10 @@ void CONSTANTE() {
         str = *strs;
     }
     switch (tok) {
-
+        case PLUS:
+        case MINUS:
+        case NUM: CONSTSIGN(); eat(NUM); break;
+        case ID: eat(ID); break;
         default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
@@ -1346,7 +1525,11 @@ void CONSTSIGN() {
         tok = *tokens;
         str = *strs;
     }
-    switch (tok) { default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
+    switch (tok) { 
+        case PLUS: eat(PLUS); break;
+        case MINUS: eat(MINUS); break;
+        case NUM: break;
+        default: if (!err) { prt(); printf("ERRO DE SINTAXE. Linha: %d -> \"%s\"", lineno, str); error();}
     }
     
 }

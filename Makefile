@@ -4,7 +4,7 @@ CFLAGS=
 LIBS=
 
 PROGRAMA = lexico
-LEXICO = lexico.l
+LEXICO = oldlexico.l
 
 $(PROGRAMA): $(LEXICO)
 	$(FLEX) $(LEXICO)

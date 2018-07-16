@@ -1,6 +1,4 @@
-chuchu + abobrinha * abacate666 $
-variavel * @ + # identificador_999 $
-programa * abc ($
-(i*j*k*l)
-abc def $
-id$
+int main() {
+    /* if */
+    puts();
+}
