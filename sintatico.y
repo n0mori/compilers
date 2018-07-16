@@ -78,4 +78,10 @@
 programa: declarations programa {  }
         | functions programa {}
 
+declarations:   NUMBER_SIGN DEFINE IDENTIFIER expression {}
+            |   vardeclarations {}
+            |   prototypedeclarations {}
+
+funcao: 
+
 %%
