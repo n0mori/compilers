@@ -90,7 +90,7 @@ define  { column += yyleng; if(!open_comment) return DEFINE;}
 exit    { column += yyleng; if(!open_comment) return EXIT;}
 [a-zA-Z_][0-9a-zA-Z_]*  { column += yyleng; if(!open_comment) return IDENTIFIER;}
 0[xX][0-9A-Fa-f]*       { column += yyleng; if(!open_comment) return NUM_HEXA;}
-0[0-9]+                 { column += yyleng; if(!open_comment) return NUM_OCTAL;}
+0[0-7]+                 { column += yyleng; if(!open_comment) return NUM_OCTAL;}
 [0-9]+                  { column += yyleng; if(!open_comment) return NUM_INTEGER;}
 \".*\"  { column += yyleng; yytext[yyleng-1] = 0; if(!open_comment) return STRING;}
 \'.*\'  { column += yyleng; yytext[yyleng-1] = 0; if(!open_comment) return CHARACTER;}

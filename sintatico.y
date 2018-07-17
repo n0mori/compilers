@@ -1,10 +1,10 @@
 %{
     #include <stdio.h>
     extern int yylex();
-    extern char* yytext;
+    //extern char* yytext;
 
-    FILE *target;
-    int offset;
+    //FILE *target;
+    //int offset;
 %}
 
 /* tokens */
@@ -77,55 +77,59 @@
 
 programa: declarations programa {}
         | function programa {}
-
+;
+programap: declarations programap {}
+        | function programap {}
+        | {}
+;
 declarations:   NUMBER_SIGN DEFINE IDENTIFIER expression {}
             |   vardeclarations {}
             |   prototypedeclarations {}
-
+;
 function: tipo starp IDENTIFIER parameters L_CURLY_BRACKET vardecp comandos R_CURLY_BRACKET {}
-
-starp -> MULTIPLY starp {}
+;
+starp: MULTIPLY starp {}
         | {}
-
-vardecp -> vardeclarations vardecp {}
+;
+vardecp: vardeclarations vardecp {}
         |  {}
-
-vardeclarations -> tipo varbody varbodyp SEMICOLON {}
-
-varbodyp -> COMMA varbody varbodyp {}
+;
+vardeclarations: tipo varbody varbodyp SEMICOLON {}
+;
+varbodyp: COMMA varbody varbodyp {}
             | {}
-
-varbody -> starp IDENTIFIER varexp varattr {}
-
-varexp -> L_SQUARE_BRACKET expression R_SQUARE_BRACKET varexp {}
+;
+varbody: starp IDENTIFIER varexp varattr {}
+;
+varexp: L_SQUARE_BRACKET expression R_SQUARE_BRACKET varexp {}
         | {}
-
-varattr -> ASSIGN attribution {}
-
-prototypedeclarations -> tipo starp IDENTIFIER parameters SEMICOLON {}
-
-parameters -> L_PAREN parbodyp R_PAREN {}
-
-parbodyp -> parbody parbodypp {}
+;
+varattr: ASSIGN attribution {}
+;
+prototypedeclarations: tipo starp IDENTIFIER parameters SEMICOLON {}
+;
+parameters: L_PAREN parbodyp R_PAREN {}
+;
+parbodyp: parbody parbodypp {}
             | {}
-
-parbodypp -> , parbody parbodypp {}
+;
+parbodypp: , parbody parbodypp {}
             | {}
-
-parbody -> tipo starp IDENTIFIER varexp {}
-
-tipo -> INT {}
+;
+parbody: tipo starp IDENTIFIER varexp {}
+;
+tipo: INT {}
     |   CHAR {}
     |   VOID {}
-
-bloco -> L_CURLY_BRACKET comandos R_CURLY_BRACKET {}
-
-comandos -> listacomandos comandosp {}
-
-comandosp -> listacomandos comandosp {}
+;
+bloco: L_CURLY_BRACKET comandos R_CURLY_BRACKET {}
+;
+comandos: listacomandos comandosp {}
+;
+comandosp: listacomandos comandosp {}
             | {}
-
-listacomandos -> DO bloco WHILE L_PAREN expression R_PAREN SEMICOLON {}
+;
+listacomandos: DO bloco WHILE L_PAREN expression R_PAREN SEMICOLON {}
     | IF L_PAREN expression R_PAREN bloco elsep {}
     | WHILE L_PAREN expression R_PAREN bloco {}
     | FOR L_PAREN expnull SEMICOLON expnull SEMICOLON expnull R_PAREN bloco {}
@@ -136,42 +140,128 @@ listacomandos -> DO bloco WHILE L_PAREN expression R_PAREN SEMICOLON {}
     | expression SEMICOLON
     | SEMICOLON
     | bloco
-
-commaexp -> COMMA expression {}
+;
+commaexp: COMMA expression {}
             | {}
-
-expnull -> expression {}
+;
+expnull: expression {}
         |  {}
-
-elsep -> ELSE bloco {}
+;
+elsep: ELSE bloco {}
         | {}
-
-expression -> attribution expattrp {}
-
-expattrp -> COMMA attribution expattrp {}
+;
+expression: attribution expattrp {}
+;
+expattrp: COMMA attribution expattrp {}
             | {}
-
-attribution -> conditional {}
+;
+attribution: conditional {}
             |  unary attrsigns attribution{}
-
-attrsigns ->  ASSIGN {}
+;
+attrsigns:  ASSIGN {}
             | ADD_ASSIGN {}
             | MINUS_ASSIGN {}
-
-conditional -> logicor ternaryp {}
-
-ternaryp -> TERNARY_CONDITIONAL expression COLON conditional {}
+;
+conditional: logicor ternaryp {}
+;
+ternaryp: TERNARY_CONDITIONAL expression COLON conditional {}
             | {}
-
-logicor -> logicand logicorp {}
-
-logicorp -> LOGICAL_OR logicand logicorp {}
+;
+logicor: logicand logicorp {}
+;
+logicorp: LOGICAL_OR logicand logicorp {}
             | {}
-
-logicand -> orexpr logicandp {}
-
-logicandp -> LOGICAL_AND orexpr logicandp {}
-
-
-
+;
+logicand: orexpr logicandp {}
+;
+logicandp: LOGICAL_AND orexpr logicandp {}
+            | {}
+;
+orexpr: xorexpr orexprp {}
+;
+orexprp: BITWISE_OR xorexpr orexprp {}
+        |  {}
+;
+xorexpr: andexpr xorexprp {}
+;
+xorexprp: BITWISE_XOR andexpr xorexprp {}
+        |   {}
+;
+andexpr: eqexpr andexprp {}
+;
+andexprp: BITWISE_AND eqexpr andexprp {}
+        |   {}
+;
+eqexpr: relexpr eqexprp {}
+;
+eqexprp: EQUAL relexpr eqexprp {}
+        |  NOT_EQUAL relexpr eqexprp {}
+        |  {}
+;
+relexpr: shiftexpr relexprp {}
+;
+relsign:  LESS_THAN {}
+        |   LESS_EQUAL {}
+        |   GREATER_THAN {}
+        |   GREATER_EQUAL {}
+;
+relexprp: relsign shiftexpr relexprp {}
+            | {}
+;
+shiftexpr: addexpr shiftexprp {}
+;
+shiftexprp: L_SHIFT addexpr shiftexprp {}
+            | R_SHIFT addexpr shiftexprp {}
+            | {}
+;
+addexpr: mulexpr addexprp {}
+;
+addexprp: PLUS mulexpr addexprp {}
+        |   MINUS mulexpr addexprp {}
+;
+mulexpr: castexpr mulexprp {}
+;
+mulsign:  MULTIPLY {}
+        |   DIV {}
+        |   REMAINDER {}
+;
+mulexprp: mulsign castexpr mulexprp {}
+            | {}
+;
+castexpr: unary {}
+        |   L_PAREN tipo starp R_PAREN castexpr {}
+;
+unarysign:  BITWISE_AND {}
+            | MULTIPLY {}
+            | PLUS {}
+            | MINUS {}
+            | BITWISE_NOT {}
+            | NOT {}
+;
+unary:  postfix {}
+        | INC unary {}
+        | DEC unary {}
+        | unarysign castexpr {}
+;
+postsign: L_SQUARE_BRACKET expression R_SQUARE_BRACKET {}
+        |   INC {}
+        |   DEC {}
+        |   L_PAREN attribution postattr R_PAREN {}
+;
+postattr: COMMA attribution postattr {}
+            | {}
+;
+postfix:  primexpr {}
+        |   postfix
+;
+primexpr: IDENTIFIER {}
+        |   numero {}
+        |   CHARACTER {}
+        |   STRING {}
+        |   L_PAREN expression R_PAREN {}
+;
+numero: NUM_INTEGER {}
+        | NUM_HEXA {}
+        | NUM_OCTAL {}
+;
 %%
