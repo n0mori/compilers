@@ -1,8 +1,8 @@
 %{
     #include <stdio.h>
     extern int yylex();
-    extern char* yytext;
     extern void prt();
+    extern char* yytext;
     extern int yylineno;
     extern int open_comment;
     extern int line_open;
@@ -10,6 +10,7 @@
     extern int column;
     extern int barran;
     int erro = 0;
+
     //FILE *target;
     //int offset;
 %}
@@ -77,31 +78,37 @@
 %token NUM_INTEGER
 %token STRING
 %token CHARACTER
+%token ERRO
 
 %start programa
 
 %%
 
-programa: declarations programa {}
-        | function programa {}
+programa: tipo programa1 {}
+        | NUMBER_SIGN DEFINE IDENTIFIER expression programap {}
 ;
-programap: declarations programap {}
-        | function programap {}
+programa1: vardeclarations programap {}
+        | starp programa2 {}
+;
+programa2: prototypedeclarations programap {}
+        |  function programap {}
+;
+programap: programa {}
         | {}
 ;
-declarations:   NUMBER_SIGN DEFINE IDENTIFIER expression {}
+/*declarations:   NUMBER_SIGN DEFINE IDENTIFIER expression {}
             |   vardeclarations {}
             |   prototypedeclarations {}
-;
-function: tipo starp IDENTIFIER parameters L_CURLY_BRACKET vardecp comandos R_CURLY_BRACKET {}
+;*/
+function: IDENTIFIER parameters L_CURLY_BRACKET vardecp comandos R_CURLY_BRACKET {}
 ;
 starp: MULTIPLY starp {}
         | {}
 ;
-vardecp: vardeclarations vardecp {}
+vardecp: tipo vardeclarations vardecp {}
         |  {}
 ;
-vardeclarations: tipo varbody varbodyp SEMICOLON {}
+vardeclarations: varbody varbodyp SEMICOLON {}
 ;
 varbodyp: COMMA varbody varbodyp {}
             | {}
@@ -113,14 +120,14 @@ varexp: L_SQUARE_BRACKET expression R_SQUARE_BRACKET varexp {}
 ;
 varattr: ASSIGN attribution {}
 ;
-prototypedeclarations: tipo starp IDENTIFIER parameters SEMICOLON {}
+prototypedeclarations: IDENTIFIER parameters SEMICOLON {}
 ;
 parameters: L_PAREN parbodyp R_PAREN {}
 ;
 parbodyp: parbody parbodypp {}
             | {}
 ;
-parbodypp: , parbody parbodypp {}
+parbodypp: COMMA parbody parbodypp {}
             | {}
 ;
 parbody: tipo starp IDENTIFIER varexp {}
