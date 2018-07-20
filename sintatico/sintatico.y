@@ -83,7 +83,6 @@
 %start programa
 
 %%
-
 programa: tipo programa1 {}
         | NUMBER_SIGN DEFINE IDENTIFIER expression programap {}
 ;
@@ -201,7 +200,7 @@ xorexpr: andexpr xorexprp {}
 xorexprp: BITWISE_XOR andexpr xorexprp {}
         |   {}
 ;
-andexpr: eqexpr andexprp {}
+andexpr:  eqexpr andexprp {}
 ;
 andexprp: BITWISE_AND eqexpr andexprp {}
         |   {}
@@ -232,6 +231,7 @@ addexpr: mulexpr addexprp {}
 ;
 addexprp: PLUS mulexpr addexprp {}
         |   MINUS mulexpr addexprp {}
+        | {}
 ;
 mulexpr: castexpr mulexprp {}
 ;
@@ -266,7 +266,7 @@ postattr: COMMA attribution postattr {}
             | {}
 ;
 postfix:  primexpr {}
-        |   postfix
+        |   postfix postsign {}
 ;
 primexpr: IDENTIFIER {}
         |   numero {}
