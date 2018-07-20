@@ -200,7 +200,7 @@ xorexpr: andexpr xorexprp {}
 xorexprp: BITWISE_XOR andexpr xorexprp {}
         |   {}
 ;
-andexpr:  eqexpr andexprp {}
+andexpr: eqexpr andexprp {}
 ;
 andexprp: BITWISE_AND eqexpr andexprp {}
         |   {}
@@ -230,7 +230,7 @@ shiftexprp: L_SHIFT addexpr shiftexprp {}
 addexpr: mulexpr addexprp {}
 ;
 addexprp: PLUS mulexpr addexprp {}
-        |   MINUS mulexpr addexprp {}
+        | MINUS mulexpr addexprp {}
         | {}
 ;
 mulexpr: castexpr mulexprp {}
