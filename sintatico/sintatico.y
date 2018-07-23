@@ -123,6 +123,7 @@ varexp: L_SQUARE_BRACKET expression R_SQUARE_BRACKET varexp {}
         | {}
 ;
 varattr: ASSIGN attribution {}
+        | {}
 ;
 prototypedeclarations: SEMICOLON {}
 ;
