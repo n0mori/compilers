@@ -17,6 +17,8 @@
     extern int erro;
     extern int lexerr;
     extern int returned;
+    extern int pos_single;
+    extern int single_comm;
 
     //FILE *target;
     //int offset;
@@ -300,37 +302,42 @@ numero: NUM_INTEGER {}
 yyerror(char *s) {
     erro = 1;
     if (!lexerr) {
-        int t, c;
-        c = column;
-        printf("error:syntax:%d:%d: %s\n", yylineno, c + 1 - strlen(yytext), yytext);
-        char *tok = copia(yytext);
-        while ((t = yylex()) != EOF) {
-            if (t == BARRAN) {
-                break;
-            }
+        if (returned != 1) {
+                int t, c;
+                c = column;
+                printf("error:syntax:%d:%d: %s\n", yylineno, c + 1 - strlen(yytext), yytext);
+                char *tok = copia(yytext);
+                while ((t = yylex()) != EOF) {
+                if (t == BARRAN) {
+                        break;
+                }
+                }
+                printf("%s", last_line);
+                printf("\n");
+                for (int i = 0; i < c - strlen(tok); i++) {
+                printf(" ");
+                }
+                printf("^");
+        } else if (returned == 1) {
+                int t, c;
+                c = column;
+                if (single_comm) {
+                        c = pos_single;
+                }
+                printf("error:syntax:%d:%d: expected declaration or statement at end of input\n", yylineno, c + 1 - strlen(yytext));
+                char *tok = copia(yytext);
+                /*while ((t = yylex()) != EOF) {
+                if (t == BARRAN) {
+                        break;
+                }
+                }*/
+                printf("%s", full_line);
+                printf("\n");
+                for (int i = 0; i < c - strlen(tok); i++) {
+                printf(" ");
+                }
+                printf("^");
         }
-        printf("%s", last_line);
-        printf("\n");
-        for (int i = 0; i < c - strlen(tok); i++) {
-            printf(" ");
-        }
-        printf("^");
-    } else if (returned) {
-        int t, c;
-        c = column;
-        printf("error:syntax:%d:%d: expected declaration or statement at end of input\n", yylineno, c + 1 - strlen(yytext), yytext);
-        char *tok = copia(yytext);
-        /*while ((t = yylex()) != EOF) {
-            if (t == BARRAN) {
-                break;
-            }
-        }*/
-        printf("%s", last_line);
-        printf("\n");
-        for (int i = 0; i < c - strlen(tok); i++) {
-            printf(" ");
-        }
-        printf("^");
     }
 }
 
