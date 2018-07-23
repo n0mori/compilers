@@ -80,34 +80,39 @@
 %token CHARACTER
 %token ERRO
 
-%start programa
+%start s
 
 %%
-programa: tipo programa1 {}
-        | NUMBER_SIGN DEFINE IDENTIFIER expression programap {}
+
+s: programa programap {}
 ;
-programa1: vardeclarations programap {}
-        | starp programa2 {}
+programa: tsi programa1 {}
+        | NUMBER_SIGN DEFINE IDENTIFIER expression {}
 ;
-programa2: prototypedeclarations programap {}
-        |  function programap {}
+programa1: vardeclarations {}
+        |  parameters programa2 {}
 ;
-programap: programa {}
+programa2: prototypedeclarations {}
+        |  function {}
+;
+tsi: tipo starp IDENTIFIER {} 
+;
+programap: programa programap {}
         | {}
 ;
 /*declarations:   NUMBER_SIGN DEFINE IDENTIFIER expression {}
             |   vardeclarations {}
             |   prototypedeclarations {}
 ;*/
-function: IDENTIFIER parameters L_CURLY_BRACKET vardecp comandos R_CURLY_BRACKET {}
+function: L_CURLY_BRACKET vardecp comandos R_CURLY_BRACKET {}
 ;
 starp: MULTIPLY starp {}
         | {}
 ;
-vardecp: tipo vardeclarations vardecp {}
+vardecp: tsi vardeclarations vardecp {}
         |  {}
 ;
-vardeclarations: varbody varbodyp SEMICOLON {}
+vardeclarations: varexp varattr varbodyp SEMICOLON {}
 ;
 varbodyp: COMMA varbody varbodyp {}
             | {}
@@ -119,7 +124,7 @@ varexp: L_SQUARE_BRACKET expression R_SQUARE_BRACKET varexp {}
 ;
 varattr: ASSIGN attribution {}
 ;
-prototypedeclarations: IDENTIFIER parameters SEMICOLON {}
+prototypedeclarations: SEMICOLON {}
 ;
 parameters: L_PAREN parbodyp R_PAREN {}
 ;
@@ -146,7 +151,7 @@ listacomandos: DO bloco WHILE L_PAREN expression R_PAREN SEMICOLON {}
     | IF L_PAREN expression R_PAREN bloco elsep {}
     | WHILE L_PAREN expression R_PAREN bloco {}
     | FOR L_PAREN expnull SEMICOLON expnull SEMICOLON expnull R_PAREN bloco {}
-    | PRINTF L_PAREN STRING commaexp {}
+    | PRINTF L_PAREN STRING commaexp R_PAREN {}
     | SCANF L_PAREN STRING COMMA BITWISE_AND IDENTIFIER R_PAREN SEMICOLON {}
     | EXIT L_PAREN expression R_PAREN SEMICOLON
     | RETURN expnull SEMICOLON
@@ -203,7 +208,7 @@ xorexprp: BITWISE_XOR andexpr xorexprp {}
 andexpr: eqexpr andexprp {}
 ;
 andexprp: BITWISE_AND eqexpr andexprp {}
-        |   {}
+        | {}
 ;
 eqexpr: relexpr eqexprp {}
 ;
@@ -260,7 +265,10 @@ unary:  postfix {}
 postsign: L_SQUARE_BRACKET expression R_SQUARE_BRACKET {}
         |   INC {}
         |   DEC {}
-        |   L_PAREN attribution postattr R_PAREN {}
+        |   L_PAREN postsignattr R_PAREN {}
+;
+postsignattr: attribution postattr {}
+        | {}
 ;
 postattr: COMMA attribution postattr {}
             | {}
