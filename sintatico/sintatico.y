@@ -2,20 +2,24 @@
     #include <stdio.h>
     extern int yylex();
     extern void prt();
+    extern char *empty_str();
     extern char* yytext;
+    extern char* full_line;
+    extern char* last_line;
     extern int yylineno;
     extern int open_comment;
     extern int line_open;
     extern int column_open;
     extern int column;
     extern int barran;
-    int erro = 0;
+    extern int erro;
 
     //FILE *target;
     //int offset;
 %}
 
 /* tokens */
+%token BARRAN
 %token VOID
 %token INT
 %token CHAR
@@ -290,11 +294,25 @@ numero: NUM_INTEGER {}
 %%
 
 yyerror(char *s) {
-    printf("error:syntax:%d:%d: %s", yylineno, column, yytext);
     erro = 1;
+    int t, c;
+    c = column;
+    printf("error:syntax:%d:%d: %s\n", yylineno, column, yytext);
+    while ((t = yylex()) != EOF) {
+        if (t == BARRAN) {
+            break;
+        }
+    }
+    printf("%s", last_line);
+    printf("\n");
+    for (int i = 0; i < c - 1; i++) {
+        printf(" ");
+    }
+    printf("^");
 }
 
 int main() {
+    full_line = empty_str();
     yyparse();
     if (!erro) {
             printf("SUCCESSFUL COMPILATION.");

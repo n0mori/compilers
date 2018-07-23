@@ -9,7 +9,7 @@ SINTATICO = sintatico.y
 $(PROGRAMA): $(LEXICO) $(SINTATICO)
 	$(FLEX) $(LEXICO)
 	$(BISON) -d -v $(SINTATICO)
-	$(CC) -c *.c -I.
+	$(CC) -g -c *.c -I.
 	$(CC) *.o -o $(PROGRAMA)
 
 clean:
