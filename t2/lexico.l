@@ -9,22 +9,42 @@
 
 %%
 
-\n              {return EOL;}
-[0-9]+          {sscanf(yytext, "%d", &integer); ; return NUM;}
-[0-9]+"."[0-9]+ {sscanf(yytext, "%lf", &real); return REAL;}
-x               {return X;}
-"+"             {return PLUS;}
-"-"             {return DIV;}
-"*"             {return MULTIPLY;}
-"/"             {return DIV;}
-"^"             {return EXP;}
-"%"             {return REM;}
-"("             {return L_PAREN;}
-")"             {return R_PAREN;}
-"sen"           {return SEN;}
-"cos"           {return COS;}
-"tan"           {return TAN;}
-"abs"           {return ABS;}
-.*              {return 256;}
+[\r\n \t]               {}
+[+-]?[0-9]+             {sscanf(yytext, "%d", &integer); ; return INTEGER;}
+[+-]?[0-9]+"."[0-9]+    {sscanf(yytext, "%lf", &real); return REAL;}
+x                       {return X;}
+"+"                     {return PLUS;}
+"-"                     {return DIV;}
+"*"                     {return MULTIPLY;}
+"/"                     {return DIV;}
+"^"                     {return EXP;}
+"%"                     {return REM;}
+"("                     {return L_PAREN;}
+")"                     {return R_PAREN;}
+"sen"                   {return SEN;}
+"cos"                   {return COS;}
+"tan"                   {return TAN;}
+"abs"                   {return ABS;}
+";"						{return SEMICOLON;}
+","						{return COMMA;}
+"show"					{return SHOW;}
+"settings"				{return SETTINGS;}
+"reset"					{return RESET;}
+"quit"					{return QUIT;}
+"h_view"				{return HVIEW;}
+"v_view"				{return VVIEW;}
+"on"					{return ON;}
+"off"					{return OFF;}
+"plot"					{return PLOT;}
+"integral"				{return INTEGRAL;}
+"steps"					{return STEPS;}
+"integrate"				{return INTEGRATE;}
+"matrix"				{return MATRIX;}
+"["						{return L_SQUARE;}
+"]"						{return R_SQUARE;}
+"determinant"			{return DETERMINANT;}
+"linear_system"			{return LINEAR_SYSTEM;}
+"about"					{return ABOUT;}
+.                       {return 256;}
 
 %%
