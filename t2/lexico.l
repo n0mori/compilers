@@ -10,9 +10,9 @@
 %%
 
 [\r\n \t]               {}
-[+-]?[0-9]+             {sscanf(yytext, "%d", &integer); ; return INTEGER;}
-[+-]?[0-9]+"."[0-9]+    {sscanf(yytext, "%lf", &real); return REAL;}
-x                       {return X;}
+[\+\-]?[0-9]+             {sscanf(yytext, "%d", &integer); ; return INTEGER;}
+[\+\-]?[0-9]+"."[0-9]+    {sscanf(yytext, "%lf", &real); return REAL;}
+[xX]                    {return X;}
 "+"                     {return PLUS;}
 "-"                     {return DIV;}
 "*"                     {return MULTIPLY;}
@@ -25,6 +25,7 @@ x                       {return X;}
 "cos"                   {return COS;}
 "tan"                   {return TAN;}
 "abs"                   {return ABS;}
+":"                     {return COLON;}
 ";"						{return SEMICOLON;}
 ","						{return COMMA;}
 "show"					{return SHOW;}
@@ -33,6 +34,8 @@ x                       {return X;}
 "quit"					{return QUIT;}
 "h_view"				{return HVIEW;}
 "v_view"				{return VVIEW;}
+"axis"                  {return AXIS;}
+"set"                   {return SET;}
 "on"					{return ON;}
 "off"					{return OFF;}
 "plot"					{return PLOT;}

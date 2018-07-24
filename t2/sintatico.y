@@ -59,6 +59,8 @@
 %token QUIT
 %token HVIEW
 %token VVIEW
+%token AXIS
+%token SET
 %token ON
 %token OFF
 %token PLOT
@@ -75,17 +77,38 @@
 
 %start s
 
+%union {
+    double value;
+    int natural;
+}
+
+%type<value> fvalue REAL
+%type<natural> axisers  
+
 %%
 
 s:  comando {YYACCEPT;}
 ;
 comando:    ABOUT SEMICOLON { printa_about();}
             |   QUIT {parsed = 1;}
+            |   SHOW SETTINGS SEMICOLON { show_settings();}
+            |   RESET SETTINGS SEMICOLON { set_padroes();}
+            |   SET setters SEMICOLON { }
+;
+setters:  AXIS axisers {axis = $2;}
+        | HVIEW fvalue COLON fvalue { set_h_view($2, $4); }
+        | VVIEW fvalue COLON fvalue { set_v_view($2, $4); }
+;
+fvalue:   INTEGER { $$ = (double) integer; }
+        | REAL { $$ = real;}
+;
+axisers:  ON {$$ = 1;}
+        | OFF {$$ = 0;}
 ;
 %%
 
 yyerror(char *s) {
-    printf("tá errado: %s", yytext);
+    printf("tá errado: %s\n", yytext);
 }
 
 int main() {
