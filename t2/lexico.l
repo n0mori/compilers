@@ -2,6 +2,7 @@
 
 %{
 
+    #include <ast.h>
     #include <sintatico.tab.h>
     double real;
     int integer;
@@ -10,8 +11,8 @@
 %%
 
 [\r\n \t]               {}
-[\+\-]?[0-9]+             {sscanf(yytext, "%d", &integer); ; return INTEGER;}
-[\+\-]?[0-9]+"."[0-9]+    {sscanf(yytext, "%lf", &real); return REAL;}
+[0-9]+                  {sscanf(yytext, "%d", &integer); ; return INTEGER;}
+[0-9]+"."[0-9]+         {sscanf(yytext, "%lf", &real); return REAL;}
 [xX]                    {return X;}
 "+"                     {return PLUS;}
 "-"                     {return DIV;}
@@ -42,12 +43,13 @@
 "integral"				{return INTEGRAL;}
 "steps"					{return STEPS;}
 "integrate"				{return INTEGRATE;}
+"integral_steps"        {return INTSTEPS;}
 "matrix"				{return MATRIX;}
 "["						{return L_SQUARE;}
 "]"						{return R_SQUARE;}
 "determinant"			{return DETERMINANT;}
 "linear_system"			{return LINEAR_SYSTEM;}
 "about"					{return ABOUT;}
-.                       {return 256;}
+.                       {puts("?");return 256;}
 
 %%

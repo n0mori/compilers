@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <string.h>
     #include <settings.h>
+    #include <ast.h>
     extern int yylex();
     //extern int yylval();
     extern char *yytext;
@@ -18,6 +19,8 @@
     extern int axis;
 
     int parsed = 0;
+
+    TreeNode *root = NULL;
 
     //FILE *target;
     //int offset;
@@ -65,6 +68,7 @@
 %token OFF
 %token PLOT
 %token INTEGRAL
+%token INTSTEPS
 %token STEPS
 %token INTEGRATE
 %token MATRIX
@@ -80,10 +84,12 @@
 %union {
     double value;
     int natural;
+    TreeNode* ast;
 }
 
-%type<value> fvalue REAL
-%type<natural> axisers  
+%type<value> fvalue fvaluep REAL
+%type<natural> axisers ivalue INTEGER sign
+%type<ast> exp fator potencia termo function parexp
 
 %%
 
@@ -91,23 +97,70 @@ s:  comando {YYACCEPT;}
 ;
 comando:    ABOUT SEMICOLON { printa_about();}
             |   QUIT {parsed = 1;}
-            |   SHOW SETTINGS SEMICOLON { show_settings();}
+            /*|   SHOW SETTINGS SEMICOLON { show_settings();}*/
+            |   SHOW showers { }
             |   RESET SETTINGS SEMICOLON { set_padroes();}
             |   SET setters SEMICOLON { }
+            |   PLOT plotter {}
+            |   exp {  }
+;
+plotter:  SEMICOLON {if (!root) puts("No Function defined!");}
+        | L_PAREN exp R_PAREN SEMICOLON {
+            root = $2;
+            if (root) {
+                RPN_Walk(root);
+            }
+        }
+;
+showers:  SETTINGS SEMICOLON { show_settings();}
+        | MATRIX SEMICOLON {}
 ;
 setters:  AXIS axisers {axis = $2;}
         | HVIEW fvalue COLON fvalue { set_h_view($2, $4); }
         | VVIEW fvalue COLON fvalue { set_v_view($2, $4); }
+        | INTSTEPS ivalue { integral_steps = $2; }
 ;
-fvalue:   INTEGER { $$ = (double) integer; }
-        | REAL { $$ = real;}
+fvaluep:   INTEGER { $$ = (double) integer * $1; }
+        | REAL { $$ = real ;}
+;
+fvalue:   sign fvaluep {$$ = $1 * $2;}
+;
+sign:     PLUS {$$ = 1;}
+        | MINUS {$$ = -1;}
+        | {$$ = 1;}
+;
+ivalue: INTEGER {$$ = integer;}
 ;
 axisers:  ON {$$ = 1;}
         | OFF {$$ = 0;}
 ;
+parexp: L_PAREN exp R_PAREN {$$ = $2;}
+;
+exp:    parexp {$$ = $1;}
+    |   fator {$$ = $1;}
+    |   exp PLUS exp {TreeNode *aux = create_node(PLUS, 0, $1, $3); $$ = aux;}
+    |   exp MINUS exp {TreeNode *aux = create_node(MINUS, 0, $1, $3); $$ = aux;}
+;
+fator:  potencia {$$=$1;}
+    |   fator MULTIPLY fator {TreeNode *aux = create_node(MULTIPLY, 0, $1, $3); $$ = aux;}
+    |   fator DIV fator {TreeNode *aux = create_node(DIV, 0, $1, $3); $$ = aux;}
+    |   fator REM fator {TreeNode *aux = create_node(REM, 0, $1, $3); $$ = aux;}
+;
+potencia:   termo {$$ = $1;}
+        |   potencia EXP potencia {TreeNode *aux = create_node(EXP, 0, $1, $3); $$ = aux;}
+;
+termo:  fvalue { TreeNode *aux = create_node(REAL, $1, NULL, NULL); $$ = aux; }
+    |   function {$$ = $1;}
+    |   X {TreeNode *aux = create_node(X, 0, NULL, NULL); $$ = aux;}
+;
+function:   SEN parexp {TreeNode *aux = create_node(SEN, 0, $2, NULL); $$ = aux;}
+        |   COS parexp {TreeNode *aux = create_node(COS, 0, $2, NULL); $$ = aux;}
+        |   TAN parexp {TreeNode *aux = create_node(TAN, 0, $2, NULL); $$ = aux;}
+        |   ABS parexp {TreeNode *aux = create_node(ABS, 0, $2, NULL); $$ = aux;}
+;
 %%
 
-yyerror(char *s) {
+int yyerror(char *s) {
     printf("tá errado: %s\n", yytext);
 }
 
