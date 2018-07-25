@@ -1,3 +1,6 @@
+#ifndef AST__H
+#define AST__H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,3 +16,5 @@ struct node
 TreeNode *create_node(int t, double val, TreeNode *l, TreeNode *r);
 
 void RPN_Walk(TreeNode* aux);
+
+#endif

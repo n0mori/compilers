@@ -1,5 +1,5 @@
 %option noyywrap
-
+%option header-file="lex.yy.h"
 %{
 
     #include <ast.h>
@@ -10,7 +10,7 @@
 
 %%
 
-[\r\n \t]               {}
+[\r\n \t]               {return BRK;}
 [0-9]+                  {sscanf(yytext, "%d", &integer); return INTEGER;}
 [0-9]+"."[0-9]+         {sscanf(yytext, "%lf", &real); return REAL;}
 [xX]                    {return X;}

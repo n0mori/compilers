@@ -1,8 +1,8 @@
 %{
     #include <stdio.h>
     #include <string.h>
-    #include <settings.h>
-    #include <ast.h>
+    #include "settings.h"
+    #include "ast.h"
     extern int yylex();
     //extern int yylval();
     extern char *yytext;
@@ -18,7 +18,7 @@
 
     extern int axis;
 
-    int parsed = 0;
+    extern int parsed;
 
     TreeNode *root = NULL;
 
@@ -93,7 +93,7 @@
 
 %%
 
-s:  comando {YYACCEPT;}
+s:  comando BRK {YYACCEPT;}
 ;
 comando:    ABOUT SEMICOLON { printa_about();}
             |   QUIT {parsed = 1;}
@@ -101,7 +101,7 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   RESET SETTINGS SEMICOLON { set_padroes();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
-            |   exp { RPN_Walk($1); }
+            |   exp { RPN_Walk($1); puts("");}
 ;
 plotter:  SEMICOLON {   
                         if (!root) { 
@@ -156,7 +156,7 @@ fator:  potencia {$$=$1;}
 potencia:   termo {$$ = $1;}
         |   potencia EXP termo {TreeNode *aux = create_node(EXP, 0, $1, $3); $$ = aux;}
 ;
-termo:  fvalue {TreeNode *aux = create_node(REAL, $1, NULL, NULL); $$ = aux; }
+termo:  fvaluep {TreeNode *aux = create_node(REAL, $1, NULL, NULL); $$ = aux; }
     |   function {$$ = $1;}
     |   X {TreeNode *aux = create_node(X, 0, NULL, NULL); $$ = aux;}
 ;
@@ -169,14 +169,4 @@ function:   SEN parexp {TreeNode *aux = create_node(SEN, 0, $2, NULL); $$ = aux;
 
 int yyerror(char *s) {
     printf("tá errado: %s\n", yytext);
-}
-
-int main() {
-
-    set_padroes();
-
-    do {
-        printf(">");
-        yyparse();
-    } while (!parsed);
 }
