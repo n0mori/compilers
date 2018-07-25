@@ -87,8 +87,8 @@
     TreeNode* ast;
 }
 
-%type<value> fvalue fvaluep REAL
-%type<natural> axisers ivalue INTEGER sign
+%type<value> fvalue fvaluep REAL INTEGER
+%type<natural> axisers ivalue sign
 %type<ast> exp fator potencia termo function parexp
 
 %%
@@ -97,18 +97,25 @@ s:  comando {YYACCEPT;}
 ;
 comando:    ABOUT SEMICOLON { printa_about();}
             |   QUIT {parsed = 1;}
-            /*|   SHOW SETTINGS SEMICOLON { show_settings();}*/
             |   SHOW showers { }
             |   RESET SETTINGS SEMICOLON { set_padroes();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
-            |   exp {  }
+            |   exp { RPN_Walk($1); }
 ;
-plotter:  SEMICOLON {if (!root) puts("No Function defined!");}
+plotter:  SEMICOLON {   
+                        if (!root) { 
+                           puts("No Function defined!");
+                        } else {
+                            RPN_Walk(root);
+                            puts("");
+                        }
+                    }
         | L_PAREN exp R_PAREN SEMICOLON {
             root = $2;
             if (root) {
                 RPN_Walk(root);
+                puts("");
             }
         }
 ;
@@ -120,7 +127,7 @@ setters:  AXIS axisers {axis = $2;}
         | VVIEW fvalue COLON fvalue { set_v_view($2, $4); }
         | INTSTEPS ivalue { integral_steps = $2; }
 ;
-fvaluep:   INTEGER { $$ = (double) integer * $1; }
+fvaluep:  INTEGER { $$ = ((double) integer); }
         | REAL { $$ = real ;}
 ;
 fvalue:   sign fvaluep {$$ = $1 * $2;}
@@ -138,18 +145,18 @@ parexp: L_PAREN exp R_PAREN {$$ = $2;}
 ;
 exp:    parexp {$$ = $1;}
     |   fator {$$ = $1;}
-    |   exp PLUS exp {TreeNode *aux = create_node(PLUS, 0, $1, $3); $$ = aux;}
-    |   exp MINUS exp {TreeNode *aux = create_node(MINUS, 0, $1, $3); $$ = aux;}
+    |   exp PLUS fator {TreeNode *aux = create_node(PLUS, 0, $1, $3); $$ = aux;}
+    |   exp MINUS fator {TreeNode *aux = create_node(MINUS, 0, $1, $3); $$ = aux;}
 ;
 fator:  potencia {$$=$1;}
-    |   fator MULTIPLY fator {TreeNode *aux = create_node(MULTIPLY, 0, $1, $3); $$ = aux;}
-    |   fator DIV fator {TreeNode *aux = create_node(DIV, 0, $1, $3); $$ = aux;}
-    |   fator REM fator {TreeNode *aux = create_node(REM, 0, $1, $3); $$ = aux;}
+    |   fator MULTIPLY potencia {TreeNode *aux = create_node(MULTIPLY, 0, $1, $3); $$ = aux;}
+    |   fator DIV potencia {TreeNode *aux = create_node(DIV, 0, $1, $3); $$ = aux;}
+    |   fator REM potencia {TreeNode *aux = create_node(REM, 0, $1, $3); $$ = aux;}
 ;
 potencia:   termo {$$ = $1;}
-        |   potencia EXP potencia {TreeNode *aux = create_node(EXP, 0, $1, $3); $$ = aux;}
+        |   potencia EXP termo {TreeNode *aux = create_node(EXP, 0, $1, $3); $$ = aux;}
 ;
-termo:  fvalue { TreeNode *aux = create_node(REAL, $1, NULL, NULL); $$ = aux; }
+termo:  fvalue {TreeNode *aux = create_node(REAL, $1, NULL, NULL); $$ = aux; }
     |   function {$$ = $1;}
     |   X {TreeNode *aux = create_node(X, 0, NULL, NULL); $$ = aux;}
 ;

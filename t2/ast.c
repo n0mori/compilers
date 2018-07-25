@@ -3,7 +3,6 @@
 
 void RPN_Walk(TreeNode* aux)
 {
-	puts("walking");
 	if(aux)
 	{
 		RPN_Walk(aux->left);
@@ -27,7 +26,7 @@ void RPN_Walk(TreeNode* aux)
 	}
 }
 
-TreeNode *create_node(int t, int val, TreeNode *l, TreeNode *r) {
+TreeNode *create_node(int t, double val, TreeNode *l, TreeNode *r) {
 	TreeNode *aux = malloc(sizeof(struct node));
 	aux->node_type = t;
 	aux->value = val;

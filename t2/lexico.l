@@ -11,11 +11,11 @@
 %%
 
 [\r\n \t]               {}
-[0-9]+                  {sscanf(yytext, "%d", &integer); ; return INTEGER;}
+[0-9]+                  {sscanf(yytext, "%d", &integer); return INTEGER;}
 [0-9]+"."[0-9]+         {sscanf(yytext, "%lf", &real); return REAL;}
 [xX]                    {return X;}
 "+"                     {return PLUS;}
-"-"                     {return DIV;}
+"-"                     {return MINUS;}
 "*"                     {return MULTIPLY;}
 "/"                     {return DIV;}
 "^"                     {return EXP;}
