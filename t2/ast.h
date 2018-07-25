@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct node TreeNode;
 struct node
@@ -16,5 +17,6 @@ struct node
 TreeNode *create_node(int t, double val, TreeNode *l, TreeNode *r);
 
 void RPN_Walk(TreeNode* aux);
+double eval(TreeNode* aux, double xval);
 
 #endif

@@ -9,8 +9,8 @@ SINTATICO = sintatico.y
 $(PROGRAMA): $(LEXICO) $(SINTATICO)
 	$(FLEX) $(LEXICO)
 	$(BISON) -d -v $(SINTATICO)
-	$(CC) -g -c *.c -I.
-	$(CC) *.o -o $(PROGRAMA)
+	$(CC) -g -c *.c -I. 
+	$(CC) *.o -lm -o $(PROGRAMA)
 
 clean:
 	rm -f *.yy.c

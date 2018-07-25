@@ -10,7 +10,8 @@
 
 %%
 
-[\r\n \t]               {return BRK;}
+[\n]                    {return BRK;}
+[\r\t ]                 {}
 [0-9]+                  {sscanf(yytext, "%d", &integer); return INTEGER;}
 [0-9]+"."[0-9]+         {sscanf(yytext, "%lf", &real); return REAL;}
 [xX]                    {return X;}

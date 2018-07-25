@@ -1,5 +1,6 @@
-#include <ast.h>
+#include "ast.h"
 #include <sintatico.tab.h>
+#include <math.h>
 
 void RPN_Walk(TreeNode* aux)
 {
@@ -24,6 +25,32 @@ void RPN_Walk(TreeNode* aux)
 			default:{printf("ERROR: INVALID TYPE ");};break;
 		}
 	}
+}
+
+double eval(TreeNode* aux, double xval)
+{
+	if(aux)
+	{
+		double l = eval(aux->left, xval);
+		double r = eval(aux->right, xval);
+		switch(aux->node_type)
+		{
+			case PLUS:{return l + r;}break;
+			case MINUS:{return l - r;}break;
+			case MULTIPLY:{return l * r;}break;
+			case DIV:{return l / r;}break;
+			case EXP:{return pow(l, r);}break;
+			case REM:{return (double) ((int) round(l) % (int) round(r));}break;
+			case SEN:{return sin(l);}break;
+			case COS:{return cos(l);}break;
+			case TAN:{return tan(l);}break;
+			case ABS:{return fabs(l);}break;
+			case REAL:{return aux->value;};break;
+			case X:{return xval;}break;
+			default:{return 0.0;}break;
+		}
+	}
+	return 0.0;
 }
 
 TreeNode *create_node(int t, double val, TreeNode *l, TreeNode *r) {

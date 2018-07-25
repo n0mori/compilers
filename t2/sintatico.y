@@ -1,8 +1,10 @@
 %{
     #include <stdio.h>
+    #include "ast.h"
     #include <string.h>
     #include "settings.h"
-    #include "ast.h"
+    #include "plotter.h"
+    #include "integral.h"
     extern int yylex();
     //extern int yylval();
     extern char *yytext;
@@ -101,21 +103,20 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   RESET SETTINGS SEMICOLON { set_padroes();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
+            |   INTEGRATE L_PAREN fvalue COLON fvalue COMMA exp R_PAREN SEMICOLON { integral($3, $5, $7); }
             |   exp { RPN_Walk($1); puts("");}
 ;
 plotter:  SEMICOLON {   
                         if (!root) { 
-                           puts("No Function defined!");
+                            puts("No Function defined!");
                         } else {
-                            RPN_Walk(root);
-                            puts("");
+                            plot(root);
                         }
                     }
         | L_PAREN exp R_PAREN SEMICOLON {
             root = $2;
             if (root) {
-                RPN_Walk(root);
-                puts("");
+                plot(root);
             }
         }
 ;
@@ -125,7 +126,13 @@ showers:  SETTINGS SEMICOLON { show_settings();}
 setters:  AXIS axisers {axis = $2;}
         | HVIEW fvalue COLON fvalue { set_h_view($2, $4); }
         | VVIEW fvalue COLON fvalue { set_v_view($2, $4); }
-        | INTSTEPS ivalue { integral_steps = $2; }
+        | INTSTEPS ivalue { 
+            if ($2 <= 0) {
+                printf("ERROR: integral_steps must be a positive non-zero integer\n");
+            } else { 
+                integral_steps = $2;
+            }
+        }
 ;
 fvaluep:  INTEGER { $$ = ((double) integer); }
         | REAL { $$ = real ;}
@@ -136,7 +143,7 @@ sign:     PLUS {$$ = 1;}
         | MINUS {$$ = -1;}
         | {$$ = 1;}
 ;
-ivalue: INTEGER {$$ = integer;}
+ivalue: sign INTEGER {$$ = integer;}
 ;
 axisers:  ON {$$ = 1;}
         | OFF {$$ = 0;}
@@ -168,5 +175,5 @@ function:   SEN parexp {TreeNode *aux = create_node(SEN, 0, $2, NULL); $$ = aux;
 %%
 
 int yyerror(char *s) {
-    printf("tá errado: %s\n", yytext);
+    printf("tá errado: %s %d\n", yytext, yytext[0]);
 }
