@@ -2,13 +2,15 @@
 #include "ast.h"
 #include "settings.h"
 #include "sintatico.tab.h"
+#include "matrix.h"
 #include "lex.yy.h"
 
 int parsed = 0;
 
 int main() {
     char l[1000];
-
+    
+    start_matrix();
     set_padroes();
 
     do {

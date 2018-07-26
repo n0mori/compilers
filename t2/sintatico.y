@@ -76,6 +76,7 @@
 %token INTEGRATE
 %token MATRIX
 %token L_SQUARE
+%token SOLVE
 %token R_SQUARE
 %token DETERMINANT
 %token LINEAR_SYSTEM
@@ -105,6 +106,7 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
             |   INTEGRATE L_PAREN fvalue COLON fvalue COMMA exp R_PAREN SEMICOLON { integral($3, $5, $7); }
+            |   SOLVE solvers SEMICOLON {};
             |   exp { RPN_Walk($1); puts("");}
 ;
 plotter:  SEMICOLON {   
@@ -134,6 +136,8 @@ setters:  AXIS axisers {axis = $2;}
                 integral_steps = $2;
             }
         }
+;
+solvers: DETERMINANT {solve_determinant();}
 ;
 fvaluep:  INTEGER { $$ = ((double) integer); }
         | REAL { $$ = real ;}

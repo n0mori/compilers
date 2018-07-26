@@ -48,6 +48,7 @@
 "matrix"				{return MATRIX;}
 "["						{return L_SQUARE;}
 "]"						{return R_SQUARE;}
+"solve"                 {return SOLVE;}
 "determinant"			{return DETERMINANT;}
 "linear_system"			{return LINEAR_SYSTEM;}
 "about"					{return ABOUT;}
