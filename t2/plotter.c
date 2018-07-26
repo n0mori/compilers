@@ -1,12 +1,31 @@
 #include "plotter.h"
 
 void plot(TreeNode *function) {
-    int i = 0;
-    double step = (h_view_hi - h_view_lo) / 80.0;
+    int i, j;
+    double step_h = (h_view_hi - h_view_lo) / 80.0;
+    double step_v = (v_view_hi - v_view_lo) / 25.0;
+    start_graph();
+
+    if (axis) {
+        draw_line();
+    }
 
     for (i = 0; i < 80; i++) {
-        double value = eval(function, h_view_lo + (i * step));
-        printf("%f\n", value);
+        double value = eval(function, h_view_lo + (i * step_h));
+
+        for (j = 24; j > 0; j--) {
+            if (value >= (v_view_lo + (j-1) * step_v) && value <= (v_view_lo + j * step_v)) {
+                graph[24-j][i] = '*';
+            }
+        }
+
+    }
+
+    for (i = 0; i < 25; i++) {
+        for (j = 0; j < 80; j++) {
+            printf("%c", graph[i][j]);
+        }
+        puts("");
     }
 }
 
@@ -20,27 +39,37 @@ void start_graph() {
 }
 
 void draw_line() {
-    /*
-    int i;
-    for (i = 0; i < 80; i++) {
-        graph[13][i] = '-';
+    int i, j;
+    double step_h = (h_view_hi - h_view_lo) / 80.0;
+    double step_v = (v_view_hi - v_view_lo) / 25.0;
+    int pos_zero_h = -1;
+    int pos_zero_v = -1;
+    for (i = 0; i < 79; i++) {
+        if (0 >= (h_view_lo + i * step_h) && 0 <= (h_view_lo + (i+1) * step_h)) {
+            pos_zero_h = i;
+        }
     }
-    double interval = h_view_hi - h_view_lo;
-    double step = interval / 80;
-    int mid;
-    if (h_view_lo <= 0 && h_view_hi > 0) {
-        mid = binary_search(h_view_hi, h_view_lo, step);
 
+    for (i = 0; i < 24; i++) {
+        if (0 >= (v_view_lo + i * step_v) && 0 <= (v_view_lo + (i+1) * step_v)) {
+            pos_zero_v = i;
+        }
     }
-    */
-}
 
-int binary_search(int middle, double l, double r, double step) {
-    /*
-    double mid = (r - l) / 2.0;
-    if (0 <= mid + step && 0 <= mid - step) {
-        return ;
-    } else if (mid + step >= )
-    */
-}
+    if (pos_zero_v != -1) {
+        for (i = 0; i < 80; i++) {
+            graph[pos_zero_v][i] = '-';
+        }
+    }
 
+    if (pos_zero_h != -1) {
+        for (i = 0; i < 25; i++) {
+            graph[i][pos_zero_h] = '|';
+        }
+    }
+
+    if (pos_zero_h != -1 && pos_zero_v != -1) {
+        graph[pos_zero_v][pos_zero_h] = '+';
+    }
+
+}
