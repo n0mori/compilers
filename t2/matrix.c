@@ -1,12 +1,17 @@
 #include "matrix.h"
 
 void start_matrix() {
-    matrix[0][0] = -1;
-    matrix[0][1] = 0;
-    matrix[1][0] = 0;
-    matrix[1][1] = 1;
-    m_rows = 2;
-    m_cols = 2;
+    matrix[0][0] = 10;
+    matrix[0][1] = 2;
+    matrix[0][2] = 1;
+    matrix[1][0] = 1;
+    matrix[1][1] = 5;
+    matrix[1][2] = 1;
+    matrix[2][0] = 2;
+    matrix[2][1] = 3;
+    matrix[2][2] = 10;
+    m_rows = 3;
+    m_cols = 3;
 }
 
 int insert_matrix(int i, int j, double value);
@@ -14,7 +19,6 @@ int insert_matrix(int i, int j, double value);
 int matrix_cop();
 
 void show_matrix() {
-    start_matrix();
     int i, j;
     if (m_rows == 0 && m_cols == 0) {
         puts("No matrix defined!");
@@ -65,9 +69,9 @@ void solve_determinant() {
     for (k = 0; k < m_rows; k++) {
         double pivot = matrix[k][k];
         for (i = k+1; i < m_rows; i++) {
-            double factor = m[i][k] / pivot;
+            double factor = matrix[i][k] / pivot;
             for (j = k; j < m_cols; j++) {
-                m[i][j] -= (factor * m[i][j]);
+                matrix[i][j] -= (factor * matrix[k][j]);
             }
         }
     }
@@ -75,7 +79,7 @@ void solve_determinant() {
     double det = 1;
 
     for (k = 0; k < m_rows; k++) {
-        det *= m[k][k];
+        det *= matrix[k][k];
     }
 
     printf("%f\n", det);
