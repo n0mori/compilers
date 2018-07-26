@@ -5,6 +5,7 @@
     #include "settings.h"
     #include "plotter.h"
     #include "integral.h"
+    #include "matrix.h"
     extern int yylex();
     //extern int yylval();
     extern char *yytext;
@@ -121,7 +122,7 @@ plotter:  SEMICOLON {
         }
 ;
 showers:  SETTINGS SEMICOLON { show_settings();}
-        | MATRIX SEMICOLON {}
+        | MATRIX SEMICOLON {show_matrix();}
 ;
 setters:  AXIS axisers {axis = $2;}
         | HVIEW fvalue COLON fvalue { set_h_view($2, $4); }
