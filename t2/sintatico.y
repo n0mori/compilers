@@ -22,6 +22,7 @@
     extern int axis;
 
     extern int parsed;
+    extern int lexerr;
 
     TreeNode *root = NULL;
 
@@ -106,7 +107,7 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
             |   INTEGRATE L_PAREN fvalue COLON fvalue COMMA exp R_PAREN SEMICOLON { integral($3, $5, $7); }
-            |   SOLVE solvers SEMICOLON {};
+            |   SOLVE solvers {};
             |   exp { RPN_Walk($1); puts("");}
 ;
 plotter:  SEMICOLON {   
@@ -137,7 +138,8 @@ setters:  AXIS axisers {axis = $2;}
             }
         }
 ;
-solvers: DETERMINANT {solve_determinant();}
+solvers:  DETERMINANT SEMICOLON {solve_determinant();}
+        | LINEAR_SYSTEM SEMICOLON {solve_linear();}
 ;
 fvaluep:  INTEGER { $$ = ((double) integer); }
         | REAL { $$ = real ;}
@@ -180,5 +182,7 @@ function:   SEN parexp {TreeNode *aux = create_node(SEN, 0, $2, NULL); $$ = aux;
 %%
 
 int yyerror(char *s) {
-    printf("tá errado: %s %d\n", yytext, yytext[0]);
+    if (!lexerr) {
+        printf("Erro de Sintaxe: [%s]\n", yytext, yytext[0]);
+    }
 }

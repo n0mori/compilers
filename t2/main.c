@@ -6,6 +6,7 @@
 #include "lex.yy.h"
 
 int parsed = 0;
+extern int lexerr;
 
 int main() {
     char l[1000];
@@ -14,6 +15,7 @@ int main() {
     set_padroes();
 
     do {
+        lexerr = 0;
         printf(">");
         fgets(l, 1000, stdin);
 

@@ -14,5 +14,6 @@ int matrix_cop();
 void show_matrix();
 void solve_determinant();
 void solve_linear();
+void gauss(double m[10][10]);
 
 #endif

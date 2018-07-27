@@ -6,6 +6,7 @@
     #include <sintatico.tab.h>
     double real;
     int integer;
+    int lexerr = 0;
 %}
 
 %%
@@ -52,6 +53,6 @@
 "determinant"			{return DETERMINANT;}
 "linear_system"			{return LINEAR_SYSTEM;}
 "about"					{return ABOUT;}
-.                       {puts("?");return 256;}
+.                       {printf("Simbolo Invalido -> %s\n", yytext); lexerr = 1;return 256;}
 
 %%
