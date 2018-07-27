@@ -6,6 +6,7 @@
     #include "plotter.h"
     #include "integral.h"
     #include "matrix.h"
+    int yyerror(char *s);
     extern int yylex();
     //extern int yylval();
     extern char *yytext;

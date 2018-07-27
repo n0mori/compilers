@@ -1,6 +1,7 @@
 #include "matrix.h"
 
 void start_matrix() {
+	/*
     matrix[0][0] = 10;
     matrix[0][1] = 2;
     matrix[0][2] = 1;
@@ -15,6 +16,14 @@ void start_matrix() {
     //matrix[2][3] = 6;
     m_rows = 3;
     m_cols = 3;
+    */
+    for (int i = 0; i < 10; i++) {
+	 for (int j = 0; j < 10; j++) {
+              matrix[i][j] = 0;
+	 }
+    }
+    m_rows = 0;
+    m_cols = 0;
 
     start_aux();
 
