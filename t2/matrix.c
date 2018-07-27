@@ -15,11 +15,47 @@ void start_matrix() {
     //matrix[2][3] = 6;
     m_rows = 3;
     m_cols = 3;
+
+    start_aux();
+
 }
 
-int insert_matrix(int i, int j, double value);
+void start_aux() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            aux[i][j] = 0.0;
+        }
+    }
+    a_rows = 0;
+    a_cols = 0;
+}
 
-int matrix_cop();
+int insert_matrix(int i, int j, double value) {
+    if (i >= 10 || j >= 10) {
+        return 1;
+    }
+
+    if (i >= a_rows) {
+        a_rows = i+1;
+    }
+
+    if (j >= a_cols) {
+        a_cols = j+1;
+    } 
+
+    aux[i][j] = value;
+    return 0;
+}
+
+int matrix_cop() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            matrix[i][j] = aux[i][j];
+        }
+    }
+    m_rows = a_rows;
+    m_cols = a_cols;
+}
 
 void show_matrix() {
     int i, j;
@@ -124,15 +160,17 @@ void solve_linear() {
     }
 
     if (det == 0.0) {
-        printf("SPI - The Linear System has infinitely many solutions\n");
-    } else if (det < 0.0) {
-        printf("SI - The Linear System has no solution\n");
+        double indep = m[m_rows - 1][m_cols -1];
+        if (indep == 0.0) {
+            printf("SPI - The Linear System has infinitely many solutions\n");
+        } else {
+            printf("SI - The Linear System has no solution\n");
+        }
     } else {
         double solution[10];
 
         for (i = 0; i < m_rows; i++) {
             solution[i] = m[i][m_rows];
-            printf("    %d %f\n", i, solution[i]);
         }
 
         for (i = m_rows - 1; i >= 0; i--) {
@@ -140,6 +178,9 @@ void solve_linear() {
                 solution[i] -= (m[i][j] * solution[j]);
             }
             solution[i] /= m[i][i];
+        }
+
+        for (i = 0; i < m_rows; i++) {
             printf("%f\n", solution[i]);
         }
     }

@@ -22,6 +22,7 @@
 "/"                     {return DIV;}
 "^"                     {return EXP;}
 "%"                     {return REM;}
+"="                     {return ASSIGN;}
 "("                     {return L_PAREN;}
 ")"                     {return R_PAREN;}
 "sen"                   {return SEN;}

@@ -24,6 +24,9 @@
     extern int parsed;
     extern int lexerr;
 
+    int materr;
+    int row, col;
+
     TreeNode *root = NULL;
 
     //FILE *target;
@@ -51,6 +54,7 @@
 %token DIV
 %token EXP
 %token REM
+%token ASSIGN
 %token L_PAREN
 %token R_PAREN
 %token SEN
@@ -99,6 +103,7 @@
 %%
 
 s:  comando BRK {YYACCEPT;}
+    | BRK {YYACCEPT;}
 ;
 comando:    ABOUT SEMICOLON { printa_about();}
             |   QUIT {parsed = 1;}
@@ -109,6 +114,21 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   INTEGRATE L_PAREN fvalue COLON fvalue COMMA exp R_PAREN SEMICOLON { integral($3, $5, $7); }
             |   SOLVE solvers {};
             |   exp { RPN_Walk($1); puts("");}
+            |   matstart matrix SEMICOLON {if (!materr) matrix_cop();}
+;
+matstart: MATRIX ASSIGN {start_aux(); materr = 0; row = 0; col = 0;}
+;
+matrix: L_SQUARE mline matrixp R_SQUARE {}
+;
+matrixp: COMMA mline matrixp {}
+        | {}
+;
+mline: L_SQUARE mnumber mlinep R_SQUARE {row++; col = 0;}
+;
+mlinep: COMMA mnumber mlinep {}
+        | {}
+;
+mnumber: fvalue {/*printf("[%d][%d] = %f\n", row, col, $1);*/ materr = insert_matrix(row, col, $1); col++;}
 ;
 plotter:  SEMICOLON {   
                         if (!root) { 
