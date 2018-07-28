@@ -113,9 +113,9 @@ comando:    ABOUT SEMICOLON { printa_about();}
             |   SET setters SEMICOLON { }
             |   PLOT plotter {}
             |   INTEGRATE L_PAREN fvalue COLON fvalue COMMA exp R_PAREN SEMICOLON { integral($3, $5, $7); }
-            |   SOLVE solvers {};
+            |   SOLVE solvers {}
             |   exp { RPN_Walk($1); puts("");}
-            |   matstart matrix SEMICOLON {if (!materr) matrix_cop();}
+            |   matstart matrix SEMICOLON {if (!materr) matrix_cop(); else printf("ERROR: Matrix limits out of boundaries.\n");}
 ;
 matstart: MATRIX ASSIGN {start_aux(); materr = 0; row = 0; col = 0;}
 ;
