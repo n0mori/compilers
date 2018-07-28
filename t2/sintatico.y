@@ -129,7 +129,7 @@ mline: L_SQUARE mnumber mlinep R_SQUARE {row++; col = 0;}
 mlinep: COMMA mnumber mlinep {}
         | {}
 ;
-mnumber: fvalue {/*printf("[%d][%d] = %f\n", row, col, $1);*/ materr = insert_matrix(row, col, $1); col++;}
+mnumber: fvalue {/*printf("[%d][%d] = %f\n", row, col, $1);*/if (!materr) materr = insert_matrix(row, col, $1); col++;}
 ;
 plotter:  SEMICOLON {   
                         if (!root) { 
